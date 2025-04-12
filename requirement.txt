@@ -1,1 +1,6 @@
-requests
+# 資料處理
+pandas>=2.0
+
+# 視覺化
+matplotlib>=3.7
+plotly>=5.15
