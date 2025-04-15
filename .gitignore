@@ -1,1 +1,5 @@
-*.env
+# 忽略 .env 檔案
+.env
+
+# 忽略 Python 編譯後的快取檔案（例如 .pyc 檔案）
+__pycache__/
