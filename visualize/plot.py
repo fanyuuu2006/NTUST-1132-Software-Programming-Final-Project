@@ -15,6 +15,7 @@ def plot_stock_trend(stock: Stock, field: str = "收盤價", date_range: Optiona
     參數:
         stock (Stock): Stock 物件
         field (str): 欲繪製的欄位名稱（預設為「收盤價」）
+        date_range (Optional[tuple[str, str]]): 查詢的日期區間 (起始日期, 結束日期)，格式為 '114/04/01'。若為 None，則回傳所有日期的資料。
     """
     
     dates = stock.get("日期", date_range)

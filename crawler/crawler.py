@@ -1,9 +1,8 @@
 import requests
 from typing import Optional
-from datetime import datetime
 
 from .stock import Stock
-
+from .utils import DateUtil
 class TaiwanStockExchangeCrawler:
     """
     台灣證券交易所資料爬蟲，用來抓取特定報表的每日交易資訊。
@@ -18,16 +17,13 @@ class TaiwanStockExchangeCrawler:
         "個股每日平均股價、成交量等": "STOCK_DAY_AVG"
     }
 
-    def __init__(self):
-        """初始化 crawler 並設定 headers。"""
-        self.headers: dict[str, str] = {
-            'User-Agent': 'Mozilla/5.0'
-        }
+    def __init__(self): ...
 
-    def fetch_raw_data(
-        self,
+    @classmethod
+    def fetch(
+        cls,
         report_name: str,
-        date: Optional[str] = None,
+        date_range: Optional[tuple[str, str]] = None,
         stock_no: Optional[str] = None,
         response_format: str = "json"
     ) -> dict:
@@ -36,7 +32,7 @@ class TaiwanStockExchangeCrawler:
 
         參數：
             report_name (str): 報表名稱，需為 `REPORTS` 中的鍵名。
-            date (str, optional): 查詢日期（格式：YYYYMMDD）。預設為今日。
+            date_range (Optional[tuple[str, str]]): 查詢的日期區間 (起始日期, 結束日期)，格式為 'YYYYMMDD'。若為 None，則回傳所有日期的資料。
             stock_no (str, optional): 股票代號（僅部分報表需要）。
             response_format (str): 回傳資料格式，預設為 "json"。
 
@@ -47,51 +43,49 @@ class TaiwanStockExchangeCrawler:
             - ValueError: 若報表名稱無效。
             - RuntimeError: 若 API 回傳錯誤或格式非 JSON。
         """
-        if report_name not in self.REPORTS:
+        if report_name not in cls.REPORTS:
             raise ValueError(f"找不到報表名稱：{report_name}")
 
-        report_code: str = self.REPORTS[report_name]
-        query_date: str = date or datetime.today().strftime("%Y%m%d")
+        report_code: str = cls.REPORTS[report_name]
 
-        params: dict[str, str] = {
-            "response": response_format,
-            "date": query_date,
-        }
+        
+        for date in DateUtil.month_range(*date_range):
+            params: dict[str, str] = {
+                "response": response_format,
+                "date": date,
+            }
 
-        if report_code in {"STOCK_DAY", "STOCK_DAY_AVG"} and stock_no:
-            params["stockNo"] = stock_no
-        elif report_code == "T86":
-            params["selectType"] = "ALLBUT0999"  # 排除代號 0999
+            if report_code in {"STOCK_DAY", "STOCK_DAY_AVG"} and stock_no:
+                params["stockNo"] = stock_no
+            elif report_code == "T86":
+                params["selectType"] = "ALLBUT0999"  # 排除代號 0999
 
-        response = requests.get(f"{self.BASE_URL}{report_code}", params=params, headers=self.headers)
+            response = requests.get(f"{cls.BASE_URL}{report_code}", params=params, headers={
+                'User-Agent': 'Mozilla/5.0'
+            })
 
-        try:
-            response_data = response.json()
-        except ValueError:
-            raise RuntimeError(f"無法解析 JSON：{response.text}")
+            try:
+                response_data: dict | str = response.json()
+            except ValueError:
+                raise RuntimeError(f"無法解析 JSON：{response.text}")
 
-        if response_data.get("stat") != "OK":
-            raise RuntimeError(f"API 回傳錯誤：{response_data.get('stat')}")
+            if response_data.get("stat") != "OK":
+                raise RuntimeError(f"API 回傳錯誤：{response_data.get('stat')}")
 
         return response_data
-
-    def get_stock_by_no(self, stock_no: str,  date: Optional[str] = None) -> Stock:
+    
+    @classmethod
+    def no(self, stock_no: str,  date_range: Optional[tuple[str, str]] = None) -> Stock:
         """
-        取得指定股票的每日歷史交易資料，回傳 Stock 物件。
+        取得指定股票代號的每日歷史交易資料
 
         參數：
             stock_no (str): 股票代號。
-            date (str, optional): 查詢日期（格式：YYYYMMDD），預設為今日。
+            date_range (Optional[tuple[str, str]]): 查詢的日期區間 (起始日期, 結束日期)，格式為 'YYYYMMDD'。若為 None，則回傳所有日期的資料。
 
         回傳：
             Stock: 封裝好的股票物件資料。
         """
-        data = self.fetch_raw_data("個股每日歷史交易資料", date=date, stock_no=stock_no)
+        data = self.fetch("個股每日歷史交易資料", date=date_range, stock_no=stock_no)
         return Stock(data)
 
-
-if __name__ == "__main__":
-    crawler = TaiwanStockExchangeCrawler()
-
-    s = crawler.get_stock_by_no("2330").get_all_by_field("日期")
-    print(s)
