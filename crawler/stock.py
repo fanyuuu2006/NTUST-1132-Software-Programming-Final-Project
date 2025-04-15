@@ -50,34 +50,16 @@ class Stock:
         """
         return self.__daily_data
     
-    def get_all_by_field(self, field: str) -> list[str]:
+    def get(self, field: str, date_range: Optional[tuple[str, str]] = None) -> list[str]:
         """
-        取得指定欄位的所有資料。
-
-        參數:
-            field (str): 欲查詢的欄位名稱（如 "收盤價"）。
-
-        回傳:
-            list[str]: 指定欄位的所有值。
-
-        引發:
-            KeyError: 欄位不存在。
-        """
-        if field not in Stock.FIELDS:
-            raise KeyError(f"無此欄位：{field}")
-        index = Stock.FIELDS[field]
-        return [ row[index] for row in self.__daily_data]
-
-    def get_field_by_date(self, field: str, date: Optional[str] = None) -> Optional[str]:
-        """
-        取得指定欄位在指定日期的值，若未提供日期則取最新一筆。
+        取得指定欄位在指定日期的值，若未提供日期則取全部。
 
         參數:
             field (str): 欄位名稱。
-            date (str, optional): 查詢的日期（格式：'114/04/15'），預設為最新一筆。
+            date_range (Optional[tuple[str, str]]): 查詢的日期區間 (起始日期, 結束日期)，格式為 '114/04/01'。若為 None，則回傳所有日期的資料。
 
         回傳:
-            Optional[str]: 欄位資料，或 None（若資料不存在）。
+            list[str]: 該欄位的資料列表 
 
         引發:
             KeyError: 欄位不存在。
@@ -85,17 +67,15 @@ class Stock:
         if field not in Stock.FIELDS:
             raise KeyError(f"無此欄位：{field}")
         if not self.__daily_data:
-            return None
+            return []
         index = Stock.FIELDS[field]
 
-        if date:
-            for row in self.__daily_data:
-                if row[Stock.FIELDS["日期"]] == date:
-                    return row[index]
-            return None  # 沒有找到該日期
+        if date_range:
+            start, end = date_range
+            return [row[index] for row in self.__daily_data if start <= row[0] <= end]
         else:
-            return self.__daily_data[-1][index]
-
+            return [row[index] for row in self.__daily_data]
+        
     @staticmethod
     def extract_info(title: str) -> tuple[str, str]:
         """
