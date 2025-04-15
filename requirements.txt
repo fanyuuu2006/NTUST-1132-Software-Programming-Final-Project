@@ -3,7 +3,6 @@ requests>=2.32.3
 
 # 資料視覺化
 matplotlib>=3.7
-plotly>=5.15
 
 # LINE 聊天機器人 SDK
 line-bot-sdk>=3.3.0
