@@ -1,9 +1,6 @@
 # 網路爬蟲與請求處理
 requests>=2.32.3
 
-# 資料處理與分析
-pandas>=2.0
-
 # 資料視覺化
 matplotlib>=3.7
 plotly>=5.15
