@@ -3,17 +3,8 @@ from typing import Optional
 class Stock:
     """表示一檔股票及其每日成交資訊。"""
     
-    FIELDS: dict[str, int] = {
-        "日期": 0,
-        "成交股數": 1,
-        "成交金額": 2,
-        "開盤價": 3,
-        "最高價": 4,
-        "最低價": 5,
-        "收盤價": 6,
-        "漲跌價差": 7,
-        "成交筆數": 8
-    }
+    def fields(self)-> dict[str, int]:
+        return {field:index for index, field in enumerate(self.__raw_data.get("fields", []))}
 
     def __init__(self, raw_data: dict):
         """
@@ -28,7 +19,7 @@ class Stock:
         if not raw_data or "data" not in raw_data or "title" not in raw_data:
             raise ValueError("無效的原始資料")
 
-        self.raw_data = raw_data
+        self.__raw_data = raw_data
         self.__no, self.__name = self.extract_info(raw_data["title"])
         self.__daily_data: list[list[str]] = raw_data["data"]
 
@@ -64,11 +55,11 @@ class Stock:
         引發:
             KeyError: 欄位不存在。
         """
-        if field not in Stock.FIELDS:
+        if field not in self.fields():
             raise KeyError(f"無此欄位：{field}")
         if not self.__daily_data:
             return []
-        index = Stock.FIELDS[field]
+        index = self.fields()[field]
 
         if date_range:
             start, end = date_range

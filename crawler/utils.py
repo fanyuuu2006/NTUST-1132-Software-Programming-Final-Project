@@ -57,14 +57,16 @@ class DateUtil:
             start_dt = datetime.strptime(start, "%Y%m%d").replace(day=1)
             end_dt = datetime.strptime(end, "%Y%m%d").replace(day=1)
 
-            result: list[str] = []
+            result: set[str] = set()
             while start_dt <= end_dt:
-                result.append(start_dt.strftime("%Y%m01"))
-                # 換下個月
-                year, month = start_dt.year + (start_dt.month // 12), (start_dt.month % 12) + 1
-                start_dt = start_dt.replace(year=year, month=month)
-
-            return result
+                result.add(start_dt.strftime("%Y%m01"))                # 換下個月
+                # 換到下個月
+                if start_dt.month == 12:
+                    start_dt = start_dt.replace(year=start_dt.year + 1, month=1)
+                else:
+                    start_dt = start_dt.replace(month=start_dt.month + 1)
+                    
+            return list(result)
         except (ValueError, TypeError) as e:
             raise ValueError(f"無法產生月份範圍：{start} ~ {end}，錯誤：{e}")
     
