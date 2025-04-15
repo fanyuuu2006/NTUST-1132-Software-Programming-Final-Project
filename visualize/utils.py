@@ -1,4 +1,3 @@
-import pandas as pd
 from datetime import datetime
 
 def convert_timestamp(timestamp: int) -> str:
