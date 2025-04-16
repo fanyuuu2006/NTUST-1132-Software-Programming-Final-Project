@@ -67,7 +67,7 @@ def text_handler(text: str) -> list[SendMessage]:
             try:
                 return feature["handler"](text)
             except Exception as e:
-                return [TextSendMessage(text=f"❌ 指令處理失敗：{e}\n{feature['discription']}")]
+                return [TextSendMessage(text=f"❌ 指令處理失敗：\n{feature['discription']}\n{e}")]
     except Exception as e:
         return [
         TextSendMessage(text=f"❌ 發生錯誤了...\n📛 錯誤內容：{e}"),

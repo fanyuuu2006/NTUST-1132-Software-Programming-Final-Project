@@ -5,6 +5,8 @@ from typing import Literal, Optional
 
 from .stock import Stock
 from .utils import DateUtil
+from .models import DAILY_DATA_JSON, REAL_TIME_JSON
+
 class TaiwanStockExchangeCrawler:
     """
     台灣證券交易所資料爬蟲
@@ -44,7 +46,7 @@ class TaiwanStockExchangeCrawler:
         
         try:
             response = requests.get(url, params=params, headers=headers)
-            data = response.json()
+            data: DAILY_DATA_JSON | REAL_TIME_JSON= response.json()
         except ValueError:
             raise RuntimeError(f"無法解析 JSON：{response.text}")
         except requests.RequestException as e:
