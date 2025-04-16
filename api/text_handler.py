@@ -49,7 +49,7 @@ features: dict[str, dict[Literal["discription", "format", "handler"], str | Feat
                     text=(
                         f"📈 即時股價查詢\n"
                         f"📌 股票代號：{text.split(' ')[1]}\n"
-                        f"💰 目前成交價：{TaiwanStockExchangeCrawler.no(text.split(' ')[1]).get('目前成交價')}"
+                        f"💰 目前成交價：{float(TaiwanStockExchangeCrawler.no(text.split(' ')[1]).get('目前成交價')[0]):2f}"
                     )
                 )
             ]
