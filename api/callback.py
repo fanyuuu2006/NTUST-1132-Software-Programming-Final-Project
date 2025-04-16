@@ -1,7 +1,7 @@
 from linebot import LineBotApi, WebhookHandler
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from linebot.exceptions import InvalidSignatureError
-from flask import Request, abort
+from flask import Flask, Request, abort
 
 import os
 from dotenv import load_dotenv
@@ -13,9 +13,11 @@ load_dotenv()
 line_bot_api = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN"))
 webhook_handler = WebhookHandler(os.getenv("LINE_CHANNEL_SECRET"))
 
-# 定義 webhook callback handler（Vercel 會呼叫此函數）
-# Vercel 會尋找名為 `handler` 的變數作為進入點
-def handler(request: Request):
+app = Flask(__name__)  # <-- Vercel 會自動找這個 app 當 handler！
+
+
+@app.route("/callback", methods=["POST"])
+def callback(request: Request):
     signature = request.headers.get('X-Line-Signature', '')
     body = request.get_data(as_text=True)
 
