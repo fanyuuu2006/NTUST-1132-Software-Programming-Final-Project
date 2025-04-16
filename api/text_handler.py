@@ -13,10 +13,12 @@ def text_handler(text: str)-> list[str]:
     """
     根據傳入的文字，取得對應的回覆內容。
     """
-    
-    for feature, data in features.items():
-        if any(keyword in text for keyword in data["keyword"]):
-            return data["handler"](text)
+    try:
+        for feature, data in features.items():
+            if any(keyword in text for keyword in data["keyword"]):
+                return data["handler"](text)
+    except Exception as e:
+        return [f"{e}"]
     
     with open("json/dialoglib.json", "r", encoding="utf-8") as f:
         dialoglib: dict = json.load(f)
