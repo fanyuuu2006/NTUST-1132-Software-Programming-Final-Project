@@ -20,8 +20,8 @@ features: dict[str, dict[Literal["discription", "handler"], str | FeatureHandler
         "discription": "顯示所有指令",
         "handler": lambda _: [
             TextSendMessage(
-            text="📖 指令列表\n\n" + "\n".join([
-                f"🟢 {cmd}\n　📌 {data['discription']}" for cmd, data in features.items() if cmd != "/help"
+            text="📖 指令列表\n\n" + "\n\n".join([
+                f"🟢 {cmd} {data['discription']}\n　📌 " for cmd, data in features.items() if cmd != "/help"
             ])
         )
         ]
