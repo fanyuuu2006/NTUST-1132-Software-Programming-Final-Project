@@ -49,9 +49,13 @@ class TaiwanStockExchangeCrawler:
             raise RuntimeError(f"無法解析 JSON：{response.text}")
         except requests.RequestException as e:
             raise RuntimeError(f"請求失敗：{e}")
+        
+        if "stat" not in data and 'rtmessage' not in data:
+            raise RuntimeError("API 回傳格式錯誤，無法解析")
 
-        if isinstance(data, dict) and data.get("stat") not in ("OK", None) and data.get('rtmessage') not in ("OK", None):  # 即時資訊沒有 stat 欄位
-            raise RuntimeError(f"API 回傳錯誤：{data.get('stat') or data.get('rtmessage')}")
+        for key in ["stat", "rtmessage"]:
+            if key in data and data[key] != "OK":
+                raise RuntimeError(f"API 回傳錯誤：[{key}: {data[key]}]")
 
         return data
 

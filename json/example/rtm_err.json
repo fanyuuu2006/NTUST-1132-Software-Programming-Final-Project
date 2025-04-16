@@ -1,0 +1,17 @@
+{
+  "msgArray": [{ "tv": "-", "s": "-", "c": "", "z": "-" }],
+  "referer": "",
+  "userDelay": 5000,
+  "rtcode": "0000",
+  "queryTime": {
+    "sysDate": "20250417",
+    "stockInfoItem": 4125,
+    "stockInfo": 452,
+    "sessionStr": "UserSession",
+    "sysTime": "00:43:57",
+    "showChart": false,
+    "sessionFromTime": -1,
+    "sessionLatestTime": -1
+  },
+  "rtmessage": "OK"
+}
