@@ -15,6 +15,9 @@ webhook_handler = WebhookHandler(os.getenv("LINE_CHANNEL_SECRET"))
 
 app = Flask(__name__)  # <-- Vercel 會自動找這個 app 當 handler！
 
+@app.route("/", methods=["GET"])
+def index():
+    return "The server is running!"
 
 @app.route("/callback", methods=["POST"])
 def callback(request: Request):
