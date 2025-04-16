@@ -5,7 +5,7 @@ from crawler import TaiwanStockExchangeCrawler
 features: dict[str, dict[Literal["keyword", "handler"], list[str]]|Callable[[str], list[str]]] = {
     "根據代號查詢股票":{
         "keyword": ["查","查詢股票", "查詢", "查股票", "代號", "股票代號"],
-        "handler": lambda text: [TaiwanStockExchangeCrawler.no(text).get_name()]
+        "handler": lambda text: [TaiwanStockExchangeCrawler.no(text.split(" ")).get_name()]
     }
 }
 
