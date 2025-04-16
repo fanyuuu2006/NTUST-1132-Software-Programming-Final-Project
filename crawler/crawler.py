@@ -7,28 +7,56 @@ from .stock import Stock
 from .utils import DateUtil
 class TaiwanStockExchangeCrawler:
     """
-    台灣證券交易所資料爬蟲，用來抓取特定報表的每日交易資訊。
+    台灣證券交易所資料爬蟲
     """
-    
-    BASE_URL: str = "https://www.twse.com.tw/exchangeReport/"
-    
+    URL_KEYS = Literal[
+        "交易報表",
+        "即時資訊"
+    ]
+    URLS: dict[URL_KEYS,str] = {
+        "交易報表":"https://www.twse.com.tw/exchangeReport",
+        "即時資訊":"https://mis.twse.com.tw/stock/api/getStockInfo.jsp", 
+        }
+        
     REPORTS_KEYS=Literal[
         "每日收盤行情",
         "三大法人買賣超",
         "個股每日歷史交易資料",
-        "個股每日平均股價、成交量等"
+        "個股每日平均股價、成交量等",
+        "融資融券與借券成交明細",
+        "法人持股統計",
+        
     ]
     REPORTS: dict[REPORTS_KEYS, str] = {
         "每日收盤行情": "MI_INDEX",
         "三大法人買賣超": "T86",
         "個股每日歷史交易資料": "STOCK_DAY",
-        "個股每日平均股價、成交量等": "STOCK_DAY_AVG"
+        "個股每日平均股價、成交量等": "STOCK_DAY_AVG",
+        "融資融券與借券成交明細": "MI_MARGN", 
+        "法人持股統計": "MI_INDEX20",             
     }
 
     def __init__(self): ...
 
     @classmethod
-    def fetch(
+    def fetch(cls, url: str, params: dict) -> dict:
+        headers = {'User-Agent': 'Mozilla/5.0'}
+        
+        try:
+            response = requests.get(url, params=params, headers=headers)
+            data = response.json()
+        except ValueError:
+            raise RuntimeError(f"無法解析 JSON：{response.text}")
+        except requests.RequestException as e:
+            raise RuntimeError(f"請求失敗：{e}")
+
+        if isinstance(data, dict) and data.get("stat") not in ("OK", None) and data.get('rtmessage') not in ("OK", None):  # 即時資訊沒有 stat 欄位
+            raise RuntimeError(f"API 回傳錯誤：{data.get('stat') or data.get('rtmessage')}")
+
+        return data
+
+    @classmethod
+    def report(
         cls,
         report_name: REPORTS_KEYS,
         date_range: Optional[tuple[str, str]] = None,
@@ -55,7 +83,8 @@ class TaiwanStockExchangeCrawler:
             raise ValueError(f"找不到報表名稱：{report_name}")
         
         if date_range is None:
-            date_range = (datetime.today().strftime("%Y%m%d"),datetime.today().strftime("%Y%m%d"))
+            today = datetime.today().strftime("%Y%m%d")
+            date_range = (today, today)  # 預設為今天的日期範圍
 
         report_code: str = cls.REPORTS[report_name]
 
@@ -66,46 +95,51 @@ class TaiwanStockExchangeCrawler:
                 "response": response_format,
                 "date": date,
             }
-
-            if report_code in {"STOCK_DAY", "STOCK_DAY_AVG"} and stock_no:
-                params["stockNo"] = stock_no
-            elif report_code == "T86":
-                params["selectType"] = "ALLBUT0999"  # 排除代號 0999
-
-            response = requests.get(f"{cls.BASE_URL}{report_code}", params=params, headers={
-                'User-Agent': 'Mozilla/5.0'
-            })
-
-            try:
-                response_data: dict | str = response.json()
-            except ValueError:
-                raise RuntimeError(f"無法解析 JSON：{response.text}")
-
-            if response_data.get("stat") != "OK":
-                raise RuntimeError(f"API 回傳錯誤：{response_data.get('stat')}")
             
+            match report_code:
+                case "STOCK_DAY" | "STOCK_DAY_AVG":
+                    params["stockNo"] = stock_no
+                case "MI_MARGN":
+                    params["selectType"] = "margin"  # 範例，實際可查 twse 參數
+                case "T86":
+                    params["selectType"] = "ALLBUT0999"  # 排除代號 0999
+                    
+            data = cls.fetch(f"{cls.URLS["交易報表"]}/{report_code}", params)
             # 將民國日期轉換西元
             try:
-                date_index = response_data["fields"].index("日期")
+                date_index = data["fields"].index("日期")
             except ValueError:
                 date_index = None  # 若沒有日期欄位就略過轉換
 
             if date_index is not None:
-                for row in response_data.get("data", []):
+                for row in data.get("data", []):
                     try:
                         row[date_index] = DateUtil.roc_to_ad(row[date_index], output_format="%Y%m%d")
                     except Exception:
                         pass  # 無法轉換的就略過
             
             if not result:
-                result = response_data
+                result = data
             else:
-                result["data"].extend(response_data.get("data", []))  # 合併每月資料
+                result["data"].extend(data.get("data", []))  # 合併每月資料
             time.sleep(0.1) # 等待 0.1 秒，避免 API 被鎖
         return result
+
+    @classmethod
+    def real_time(cls, stock_no: str) -> dict:
+        """
+        取得指定股票代號即時資料
+
+        參數：
+            stock_no (str): 股票代號。
+
+        回傳：
+            dict: 即時資料。
+        """
+        return cls.fetch(cls.URLS["即時資訊"], {"ex_ch": f"tse_{stock_no}.tw"})
     
     @classmethod
-    def no(self, stock_no: str,  date_range: Optional[tuple[str, str]] = None) -> Stock:
+    def no(cls, stock_no: str,  date_range: Optional[tuple[str, str]] = None) -> Stock:
         """
         取得指定股票代號的每日歷史交易資料
 
@@ -116,6 +150,9 @@ class TaiwanStockExchangeCrawler:
         回傳：
             Stock: 封裝好的股票物件資料。
         """
-        data = self.fetch("個股每日歷史交易資料", date_range=date_range, stock_no=stock_no)
-        return Stock(data)
-
+        stock = Stock(stock_no)
+        stock.set_data(
+            daily_data= cls.report("個股每日歷史交易資料", date_range, stock_no),
+            real_time_data=cls.real_time(stock_no)
+        )
+        return stock
