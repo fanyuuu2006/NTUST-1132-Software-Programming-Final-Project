@@ -1,7 +1,7 @@
 from linebot import LineBotApi, WebhookHandler
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from linebot.exceptions import InvalidSignatureError
-from flask import Flask, Request, abort, request
+from flask import Flask, abort, request
 
 import os
 from dotenv import load_dotenv
@@ -21,15 +21,18 @@ def index():
 
 @app.route("/callback", methods=["POST"])
 def callback():
-    signature = request.headers.get('X-Line-Signature', '')
+    signature = request.headers.get("X-Line-Signature", "")
     body = request.get_data(as_text=True)
+    
+    print("Received signature:", signature)
+    print("Request body:", body)
 
-    # 驗證來自 LINE 的請求，避免被偽造。
     try:
-        webhook_handler.handle(body, signature)  # 驗證成功後會觸發事件分派
+        webhook_handler.handle(body, signature)
     except InvalidSignatureError:
+        print("❌ Signature verification failed")
         abort(400)
-    return 'OK'
+    return "OK"
 
 # 訊息事件處理：收到文字時自動回覆
 @webhook_handler.add(MessageEvent, message=TextMessage)
