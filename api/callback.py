@@ -1,7 +1,7 @@
 from linebot import LineBotApi, WebhookHandler
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from linebot.exceptions import InvalidSignatureError
-from flask import Flask, Request, abort
+from flask import Flask, Request, abort, request
 
 import os
 from dotenv import load_dotenv
@@ -20,7 +20,7 @@ def index():
     return "The server is running!"
 
 @app.route("/callback", methods=["POST"])
-def callback(request: Request):
+def callback():
     signature = request.headers.get('X-Line-Signature', '')
     body = request.get_data(as_text=True)
 
