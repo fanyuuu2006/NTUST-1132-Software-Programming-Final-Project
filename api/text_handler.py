@@ -62,7 +62,7 @@ def text_handler(text: str) -> list[SendMessage]:
     """
     try:
         cmd = text.split(' ')[0]
-        if cmd in features:
+        if cmd.lower() in features:
             feature = features[cmd]
             try:
                 return feature["handler"](text)
