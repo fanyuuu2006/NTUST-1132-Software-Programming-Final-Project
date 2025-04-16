@@ -2,10 +2,10 @@ import json
 from typing import Callable, Literal
 from crawler import TaiwanStockExchangeCrawler
 
-features: dict[str, dict[Literal["keyword", "handler"], list[str]]|Callable[[str], str]] = {
+features: dict[str, dict[Literal["keyword", "handler"], list[str]]|Callable[[str], list[str]]] = {
     "根據代號查詢股票":{
         "keyword": ["查","查詢股票", "查詢", "查股票", "代號", "股票代號"],
-        "handler": lambda text: TaiwanStockExchangeCrawler.no(text).get_name()
+        "handler": lambda text: [TaiwanStockExchangeCrawler.no(text).get_name()]
     }
 }
 
@@ -16,7 +16,7 @@ def text_handler(text: str)-> list[str]:
     
     for feature, data in features.items():
         if any(keyword in text for keyword in data["keyword"]):
-            return [data["handler"](text)]
+            return data["handler"](text)
     
     with open("json/dialoglib.json", "r", encoding="utf-8") as f:
         dialoglib: dict = json.load(f)

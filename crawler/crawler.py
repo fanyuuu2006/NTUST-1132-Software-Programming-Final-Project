@@ -1,7 +1,7 @@
 from datetime import datetime
 import time
 import requests
-from typing import Optional
+from typing import Literal, Optional
 
 from .stock import Stock
 from .utils import DateUtil
@@ -12,7 +12,13 @@ class TaiwanStockExchangeCrawler:
     
     BASE_URL: str = "https://www.twse.com.tw/exchangeReport/"
     
-    REPORTS: dict[str, str] = {
+    REPORTS_KEYS=Literal[
+        "每日收盤行情",
+        "三大法人買賣超",
+        "個股每日歷史交易資料",
+        "個股每日平均股價、成交量等"
+    ]
+    REPORTS: dict[REPORTS_KEYS, str] = {
         "每日收盤行情": "MI_INDEX",
         "三大法人買賣超": "T86",
         "個股每日歷史交易資料": "STOCK_DAY",
@@ -24,7 +30,7 @@ class TaiwanStockExchangeCrawler:
     @classmethod
     def fetch(
         cls,
-        report_name: str,
+        report_name: REPORTS_KEYS,
         date_range: Optional[tuple[str, str]] = None,
         stock_no: Optional[str] = None,
         response_format: str = "json"
