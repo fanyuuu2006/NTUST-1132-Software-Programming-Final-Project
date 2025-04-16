@@ -7,9 +7,10 @@ from crawler import TaiwanStockExchangeCrawler
 FeatureHandler = Callable[[str], list[SendMessage]]
 
 
-features: dict[str, dict[Literal["discription", "handler"], str | FeatureHandler]] = {  
+features: dict[str, dict[Literal["discription", "format", "handler"], str | FeatureHandler]] = {  
     "/test": {
         "discription": "測試用指令",
+        "format": "/test",
         "handler": lambda _: [
             TextSendMessage(
                 text="🧪 測試成功！\n測試都不揪喔❓😎"
@@ -18,16 +19,18 @@ features: dict[str, dict[Literal["discription", "handler"], str | FeatureHandler
     },
     "/help": {
         "discription": "顯示所有指令",
+        "format": "/help",
         "handler": lambda _: [
             TextSendMessage(
             text="📖 指令列表\n\n" + "\n\n".join([
-                f"🟢 {cmd} {data['discription']}\n　📌 " for cmd, data in features.items() if cmd != "/help"
+                f"🟢 {cmd}: {data['discription']}\n　📌{data['format']}" for cmd, data in features.items() if cmd != "/help"
             ])
         )
         ]
     },
     "/name": {
-        "discription": "查詢股票名稱：/name {股票代號}",
+        "discription": "查詢股票名稱",
+        "format": "/name <股票代號>",
         "handler": lambda text: [
             TextSendMessage(
                 text=(
@@ -39,7 +42,8 @@ features: dict[str, dict[Literal["discription", "handler"], str | FeatureHandler
         ]
     },
     "/price": {
-        "discription": "查詢即時股價：/price {股票代號}",
+        "discription": "查詢即時股價",
+        "format": "/price <股票代號>",
         "handler": lambda text: [
             TextSendMessage(
                     text=(
