@@ -58,7 +58,7 @@ def text_handler(text: str) -> list[SendMessage]:
     try:
         cmd = text.split(' ')[0]
         if cmd == "/":
-            return [TextSendMessage(text="/ 指令之間可沒有空格喔🤌")]
+            return [TextSendMessage(text="/ 與 指令之間可沒有空格喔🤌")]
         if cmd.lower() in features:
             feature = features[cmd]
             try:
