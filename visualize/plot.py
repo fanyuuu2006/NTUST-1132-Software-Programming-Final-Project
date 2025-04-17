@@ -39,8 +39,8 @@ def trend(
         - 輸出結果可透過 Web 框架（如 Flask、FastAPI）以 `image/jpeg` MIME 類型回傳。
     """
     
-    dates = stock.get(key="每日交易資料",daily_data_key="日期",date_range = date_range )
-    values = stock.get(key="每日交易資料",daily_data_key=field,date_range = date_range )
+    dates = [data["日期"] for data in stock.get(key="每日交易資料",date_range = date_range )[0]]
+    values = [data[field] for data in stock.get(key="每日交易資料",date_range = date_range )[0]]
 
     # 將「收盤價」等轉為 float，並忽略無法轉換的項目（如 "--"）
     cleaned_dates: list[str] = []

@@ -11,8 +11,8 @@ def controller(text: str) -> list[SendMessage]:
     parts = text.strip().split()
 
     stock_no = parts[1]
-    start_date = parts[2] if len(parts) > 2 else utils.date.DateUtil.today()
-    end_date = parts[3] if len(parts) > 2 else utils.date.DateUtil.today()
+    start_date = parts[2] if len(parts) > 2 else utils.date.today()
+    end_date = parts[3] if len(parts) > 2 else utils.date.today()
 
     # 查詢每日資料
     stock = TaiwanStockExchangeCrawler.no(stock_no, date_range=(start_date, end_date))

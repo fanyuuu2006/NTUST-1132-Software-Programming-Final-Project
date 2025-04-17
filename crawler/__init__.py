@@ -1,5 +1,5 @@
 from .stock import Stock
-from .crawler import TaiwanStockExchangeCrawler
+from .twse import TaiwanStockExchangeCrawler
 
 
 __all__ = ["Stock", "TaiwanStockExchangeCrawler"]
