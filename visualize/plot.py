@@ -6,8 +6,8 @@ from matplotlib import rcParams
 from crawler import Stock
 from crawler.models import DAILY_DATA_KEYS
 
-# 設定字型為 Windows 系統內建字型
-rcParams['font.sans-serif'] = ['Microsoft YaHei', 'SimHei']
+# 設定字型使用跨平台中文字型
+rcParams['font.sans-serif'] = ['Noto Sans CJK TC']
 rcParams['axes.unicode_minus'] = False  # 確保負號能顯示
 
 
