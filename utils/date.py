@@ -85,13 +85,13 @@ def month_range(start: str, end: str) -> list[str]:
 
 
 def check_date_range(date_range: tuple[Optional[str], Optional[str]]) -> tuple[str, str]:
-    today = today()
+    td = today()
     if date_range is None:
-        return (today, today)
+        return (td, td)
 
     start, end = date_range
-    start = start or today
-    end = end or today
+    start = start or td
+    end = end or td
 
     if start > end:
         raise ValueError("起始日期不能大於結束日期")
