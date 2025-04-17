@@ -65,7 +65,7 @@ class TaiwanStockExchangeCrawler:
     def report(
         cls,
         report_name: REPORTS_KEYS,
-        date_range: Optional[tuple[str, str]] = None,
+        date_range: Optional[tuple[Optional[str], Optional[str]]] = None,
         stock_no: Optional[str] = None,
         response_format: str = "json"
     ) -> dict:
@@ -88,10 +88,8 @@ class TaiwanStockExchangeCrawler:
         if report_name not in cls.REPORTS:
             raise ValueError(f"找不到報表名稱：{report_name}")
         
-        if date_range is None:
-            today = datetime.today().strftime("%Y%m%d")
-            date_range = (today, today)  # 預設為今天的日期範圍
-
+        date_range = DateUtil.check_date_range(date_range)
+    
         report_code: str = cls.REPORTS[report_name]
 
         result: dict = {}

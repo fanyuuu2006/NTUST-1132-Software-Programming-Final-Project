@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 class DateUtil:
     @staticmethod
@@ -70,4 +71,17 @@ class DateUtil:
         except (ValueError, TypeError) as e:
             raise ValueError(f"無法產生月份範圍：{start} ~ {end}，錯誤：{e}")
     
-    
+    @staticmethod
+    def check_date_range(date_range: tuple[Optional[str], Optional[str]]) -> tuple[str, str]:
+        today = datetime.today().strftime("%Y%m%d")
+        if date_range is None:
+            return (today, today)
+
+        start, end = date_range
+        start = start or today
+        end = end or today
+
+        if start > end:
+            raise ValueError("起始日期不能大於結束日期")
+
+        return (start, end)
