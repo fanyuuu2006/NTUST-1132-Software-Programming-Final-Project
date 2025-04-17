@@ -94,8 +94,10 @@ def text_handler(text: str) -> list[SendMessage]:
             feature = features[cmd]
             try:
                 return feature["handler"](text)
+            except IndexError:
+                return [TextSendMessage(text=f"❌ 指令處理失敗：\n{feature['discription']}\n指令參數不夠")]
             except Exception as e:
-                return [TextSendMessage(text=f"❌ 指令處理失敗：\n{feature['discription']}\n{"指令參數不夠" if e == "index out of range" else e}")]
+                return [TextSendMessage(text=f"❌ 指令處理失敗：\n{feature['discription']}\n{str(e)}")]
     except Exception as e:
         return [
         TextSendMessage(text=f"❌ 發生錯誤了...\n📛 錯誤內容：{e}"),
