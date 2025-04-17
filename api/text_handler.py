@@ -76,7 +76,7 @@ features: dict[str, dict[Literal["discription", "format", "handler"], str | Feat
                     ]) +
                     f"\n\n每日交易資料：\n" +
                     "\n\n".join([
-                        f"　📌 {key}: {value[0]}" for data in TaiwanStockExchangeCrawler.no(text.split(' ')[1]).get("每日交易資料") for key, value in data.items()
+                        f"　📌 {key}: {value[0]}" for data in TaiwanStockExchangeCrawler.no(text.split(' ')[1]).get("每日交易資料")[0] for key, value in data.items()
                     ])
                 )
             )
@@ -95,7 +95,7 @@ def text_handler(text: str) -> list[SendMessage]:
             try:
                 return feature["handler"](text)
             except Exception as e:
-                return [TextSendMessage(text=f"❌ 指令處理失敗：\n{feature['discription']}\n{e}")]
+                return [TextSendMessage(text=f"❌ 指令處理失敗：\n{feature['discription']}\n{"指令參數不夠" if e == "index out of range" else e}")]
     except Exception as e:
         return [
         TextSendMessage(text=f"❌ 發生錯誤了...\n📛 錯誤內容：{e}"),

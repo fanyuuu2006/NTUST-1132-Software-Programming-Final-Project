@@ -66,7 +66,7 @@ class Stock:
         
         if key == "每日交易資料":
             if daily_data_key is None:
-                raise ValueError("請提供每日交易資料的欄位")
+                return [self.__data["每日交易資料"]]
             if date_range:
                 start, end = date_range
                 return [data[daily_data_key] for data in self.__data["每日交易資料"] if start <= data["日期"] <= end]
@@ -74,16 +74,4 @@ class Stock:
         
         return [self.__data[key]]
     
-    def get_info(self) -> dict[str, str]:
-        """
-        取得股票資訊。
-        
-        回傳:
-            dict[str, str]: 股票資訊，包含股票代號、名稱、即時價格等。
-        """
-        return "\n\n".join([
-            f"{key}: {value}" for key, value in self.__data.items() if key != "每日交易資料"
-        ]) + "\n\n每日交易資料".join([
-            f"每日交易資料: {len(self.__data['每日交易資料'])} 筆"
-        ])
 
