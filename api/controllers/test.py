@@ -1,6 +1,6 @@
 from linebot.models import SendMessage, TextSendMessage
 
-def handler(_: str) -> list[SendMessage]:
+def controller(_: str) -> list[SendMessage]:
     """
     處理 /test 指令，測試用
     """

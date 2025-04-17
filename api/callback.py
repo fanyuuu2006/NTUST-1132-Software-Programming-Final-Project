@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from crawler import TaiwanStockExchangeCrawler
 from visualize import trend
 
-from .text_handler import text_handler
+from .handler import handler
 
 # 讀取 .env 環境變數
 load_dotenv()
@@ -45,7 +45,7 @@ def callback():
 def handle_text_message(event: MessageEvent):
     LINE_BOT.reply_message(
         event.reply_token,
-        text_handler(event.message.text)
+        handler(event.message.text)
     )
 
 @app.route('/plot/<stock_no>', methods=['GET'])
