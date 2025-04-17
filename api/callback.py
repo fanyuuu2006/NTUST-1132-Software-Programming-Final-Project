@@ -48,11 +48,16 @@ def handle_text_message(event: MessageEvent):
         text_handler(event.message.text)
     )
 
-@app.route('/plot/<stock_no>')
+@app.route('/plot/<stock_no>', methods=['GET'])
 def plot(stock_no):
     # 取得查詢參數
-    field = request.args.get('field', '收盤價')
-    interval = request.args.get('interval', 'day')
+    if "field" not in request.args:
+        return "請提供查詢的欄位", 400
+    if "interval" not in request.args:
+        return "請提供查詢的時間間隔", 400
+    
+    field = request.args.get('field')
+    interval = request.args.get('interval')
     start = request.args.get('start')
     end = request.args.get('end')
 

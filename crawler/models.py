@@ -63,7 +63,6 @@ class REAL_TIME_JSON(TypedDict):
     cachedAlive: int
 
 
-STOCK_KEYS = REAL_TIME_KEYS | Literal["每日交易資料"]
 
 real_time_fields: dict[REAL_TIME_KEYS, REAL_TIME_FIELDS]={
     "股票代碼": "@",

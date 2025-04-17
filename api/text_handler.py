@@ -53,6 +53,34 @@ features: dict[str, dict[Literal["discription", "format", "handler"], str | Feat
                     )
                 )
             ]
+    },
+    "/info": {
+        "discription": "查詢股票相關資訊",
+        "format": "/info <股票代號> <欄位名稱>",
+        "handler": lambda text: [
+            TextSendMessage(
+                text=(
+                    f"📊 股票資訊查詢\n"
+                    f"📌 股票代號：{text.split(' ')[1]}\n"
+                    f"📘 {text.split(' ')[2]}：{TaiwanStockExchangeCrawler.no(text.split(' ')[1]).get(text.split(' ')[2])[0]}"
+                )
+            )
+        ] if len(text.split(' ')) > 2 else [
+            TextSendMessage(
+                text=(
+                    f"📊 股票資訊查詢\n"
+                    f"📌 股票代號：{text.split(' ')[1]}\n"
+                    f"📘 股票資訊：\n" +
+                    "\n\n".join([
+                        f"　📌 {key}: {value[0]}" for key, value in TaiwanStockExchangeCrawler.no(text.split(' ')[1]).get_data().items() if key != "每日交易資料"
+                    ]) +
+                    f"\n\n每日交易資料：\n" +
+                    "\n\n".join([
+                        f"　📌 {key}: {value[0]}" for data in TaiwanStockExchangeCrawler.no(text.split(' ')[1]).get("每日交易資料") for key, value in data.items()
+                    ])
+                )
+            )
+        ]
     }
 }
 

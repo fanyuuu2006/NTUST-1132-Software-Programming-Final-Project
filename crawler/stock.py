@@ -73,4 +73,17 @@ class Stock:
             return [data[daily_data_key] for data in self.__data["每日交易資料"]]
         
         return [self.__data[key]]
+    
+    def get_info(self) -> dict[str, str]:
+        """
+        取得股票資訊。
+        
+        回傳:
+            dict[str, str]: 股票資訊，包含股票代號、名稱、即時價格等。
+        """
+        return "\n\n".join([
+            f"{key}: {value}" for key, value in self.__data.items() if key != "每日交易資料"
+        ]) + "\n\n每日交易資料".join([
+            f"每日交易資料: {len(self.__data['每日交易資料'])} 筆"
+        ])
 
