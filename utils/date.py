@@ -3,6 +3,20 @@ from typing import Optional
 
 class DateUtil:
     @staticmethod
+    def today(fmt="%Y%m%d") -> str:
+        """
+        取得今天的日期字串，格式為 YYYYMMDD。
+        
+        參數:
+            fmt (str): 輸出的日期格式（預設為 '%Y%m%d'）。
+        
+        回傳:
+            str: 今天的日期字串。
+        """
+        return datetime.today().strftime(fmt)
+    
+    
+    @staticmethod
     def roc_to_ad(roc: str, output_format: str = "%Y%m%d") -> str:
         """
         將民國日期字串（如 '114/04/15'）轉換為西元日期字串（如 '20250415'）。
@@ -73,7 +87,7 @@ class DateUtil:
     
     @staticmethod
     def check_date_range(date_range: tuple[Optional[str], Optional[str]]) -> tuple[str, str]:
-        today = datetime.today().strftime("%Y%m%d")
+        today = DateUtil.today()
         if date_range is None:
             return (today, today)
 

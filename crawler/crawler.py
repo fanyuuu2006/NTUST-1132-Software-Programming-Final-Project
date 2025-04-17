@@ -1,10 +1,9 @@
-from datetime import datetime
 import time
 import requests
 from typing import Literal, Optional
 
+import utils
 from .stock import Stock
-from .utils import DateUtil
 from .models import DAILY_DATA_JSON, REAL_TIME_JSON
 
 class TaiwanStockExchangeCrawler:
@@ -88,13 +87,13 @@ class TaiwanStockExchangeCrawler:
         if report_name not in cls.REPORTS:
             raise ValueError(f"找不到報表名稱：{report_name}")
         
-        date_range = DateUtil.check_date_range(date_range)
+        date_range = utils.date.DateUtil.check_date_range(date_range)
     
         report_code: str = cls.REPORTS[report_name]
 
         result: dict = {}
         
-        for date in DateUtil.month_range(*date_range):
+        for date in utils.date.DateUtil.month_range(*date_range):
             params: dict[str, str] = {
                 "response": response_format,
                 "date": date,
@@ -118,7 +117,7 @@ class TaiwanStockExchangeCrawler:
             if date_index is not None:
                 for row in data.get("data", []):
                     try:
-                        row[date_index] = DateUtil.roc_to_ad(row[date_index], output_format="%Y%m%d")
+                        row[date_index] = utils.date.DateUtil.roc_to_ad(row[date_index], output_format="%Y%m%d")
                     except Exception:
                         pass  # 無法轉換的就略過
             

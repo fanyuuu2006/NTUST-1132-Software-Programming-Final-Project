@@ -1,4 +1,5 @@
 from crawler import TaiwanStockExchangeCrawler
+import utils
 from linebot.models import SendMessage, TextSendMessage
 from crawler.models import DAILY_DATA_KEYS
 
@@ -10,23 +11,22 @@ def controller(text: str) -> list[SendMessage]:
     parts = text.strip().split()
 
     stock_no = parts[1]
-    start_date = parts[2] if len(parts) > 2 else None
-    end_date = parts[3] if len(parts) > 2 else None
+    start_date = parts[2] if len(parts) > 2 else utils.date.DateUtil.today()
+    end_date = parts[3] if len(parts) > 2 else utils.date.DateUtil.today()
 
     # 查詢每日資料
-    crawler = TaiwanStockExchangeCrawler.no(stock_no, date_range=(start_date, end_date))
-    daily_data_list: list[dict[DAILY_DATA_KEYS, str]] = crawler.get("每日交易資料", date_range=(start_date, end_date))[0]
+    stock = TaiwanStockExchangeCrawler.no(stock_no, date_range=(start_date, end_date))
+    daily_data: list[dict[DAILY_DATA_KEYS, str]] = stock.get("每日交易資料", date_range=(start_date, end_date))[0]
 
-    if not daily_data_list:
+    if not daily_data:
         return [TextSendMessage(text="查無資料，請確認股票代號與日期是否正確 ✅")]
 
     # 整理文字內容
     result: list[SendMessage] = []
     header = f"📊 股票代碼: {stock_no}\n（{start_date} ~ {end_date}）每日交易資訊如下：\n"
     result.append(TextSendMessage(text=header))
-
     group_text = ""
-    for i, day_data in enumerate(daily_data_list, 1):
+    for i, day_data in enumerate(daily_data):
         group_text += (
             f"📅 日期：{day_data['日期']}\n"
             f"📈 開盤：{day_data['開盤價']} 元\n"
@@ -40,7 +40,7 @@ def controller(text: str) -> list[SendMessage]:
             "———————————————\n\n"
         )
         
-        if i % 5 == 0 or i == len(daily_data_list):
+        if i % 5 == 0 or i == len(daily_data):
             result.append(TextSendMessage(text=group_text))
             group_text = ""
 

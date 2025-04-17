@@ -22,7 +22,7 @@ features: dict[str, dict[Literal["discription", "format", "controller"], str | F
                     text=(
                 "❗小提醒：\n"
                 "1️⃣ 指令與參數要以空格區隔！\n"
-                "2️⃣`?` 代表 可選參數 ，不一定要填寫唷！😘"
+                "2️⃣`?` 代表 可選參數 ，不一定要填寫唷！😘\n"
                 "3️⃣ 日期格式為 `YYYYMMDD`，例如：20250417\n"
             )
         )

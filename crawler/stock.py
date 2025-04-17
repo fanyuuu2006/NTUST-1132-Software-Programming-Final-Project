@@ -58,7 +58,7 @@ class Stock:
     def get_no(self) -> str:
         return self.__no
     
-    def get(self, key:KEYS, date_range: Optional[tuple[str, str]] = None) -> list[str] | list[list[dict[DAILY_DATA_KEYS, str]]]:
+    def get(self, key:KEYS, date_range: Optional[tuple[str, str]] = None) -> list[str|list[dict[DAILY_DATA_KEYS, str]]]:
         if key not in self.__data:
             raise KeyError(f"無此欄位：{key}")
         if not self.__data:
@@ -67,7 +67,7 @@ class Stock:
         if key == "每日交易資料":
             if date_range:
                 start, end = date_range
-                return [data for data in self.__data["每日交易資料"] if start <= data["日期"] <= end]
+                return [[data for data in self.__data["每日交易資料"] if start <= data["日期"] <= end]]
             return [self.__data["每日交易資料"]]
         
         return [self.__data[key]]
