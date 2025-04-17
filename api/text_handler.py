@@ -15,13 +15,15 @@ features: dict[str, dict[Literal["discription", "format", "controller"], str | F
         "controller": lambda _: [
             TextSendMessage(
             text="📖 指令列表\n\n" + "\n\n".join([
-                f"🟢{data['discription']}\n　📌{data['format']}" for cmd, data in features.items() if cmd != "/help"
+                f"🟢{data['discription']}\n📌{data['format']}" for cmd, data in features.items() if cmd != "/help"
             ])
         ),
             TextSendMessage(
                     text=(
                 "❗小提醒：\n"
-                "`?` 代表 可選參數 ，不一定要填寫唷！😘"
+                "1️⃣ 指令與參數要以空格區隔！\n"
+                "2️⃣`?` 代表 可選參數 ，不一定要填寫唷！😘"
+                "3️⃣ 日期格式為 `YYYYMMDD`，例如：20250417\n"
             )
         )
         ]
@@ -43,7 +45,7 @@ features: dict[str, dict[Literal["discription", "format", "controller"], str | F
     },
     # 加入 features 中：
     "/daily": {
-        "discription": "查詢期間內每日交易資訊（成交量/收盤價等）",
+        "discription": "查詢期間內每日交易資訊",
         "format": "/daily <股票代號> <起始日期?> <結束日期?>",
         "controller": daily.controller
     },

@@ -10,11 +10,11 @@ def controller(text: str) -> list[SendMessage]:
     parts = text.strip().split()
 
     stock_no = parts[1]
-    start_date = parts[2]
-    end_date = parts[3]
+    start_date = parts[2] if len(parts) > 2 else None
+    end_date = parts[3] if len(parts) > 2 else None
 
     # 查詢每日資料
-    crawler = TaiwanStockExchangeCrawler.no(stock_no)
+    crawler = TaiwanStockExchangeCrawler.no(stock_no, date_range=(start_date, end_date))
     daily_data_list: list[dict[DAILY_DATA_KEYS, str]] = crawler.get("每日交易資料", date_range=(start_date, end_date))[0]
 
     if not daily_data_list:
