@@ -1,10 +1,14 @@
+import io
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage
-from flask import Flask, abort, request
+from flask import Flask, abort, request, send_file
 
 import os
 from dotenv import load_dotenv
+
+from crawler import TaiwanStockExchangeCrawler
+from visualize import trend
 
 from .text_handler import text_handler
 
@@ -44,3 +48,25 @@ def handle_text_message(event: MessageEvent):
         text_handler(event.message.text)
     )
 
+@app.route('/plot/<stock_no>')
+def plot(stock_no):
+    # 取得查詢參數
+    field = request.args.get('field', '收盤價')
+    interval = request.args.get('interval', 'day')
+    start = request.args.get('start')
+    end = request.args.get('end')
+
+    # 組合日期範圍（可為 None）
+    date_range = (start, end) if start and end else None
+
+    img_data = trend(TaiwanStockExchangeCrawler.no(stock_no, date_range), field=field, date_range=date_range, interval=interval)
+
+    if img_data is None:
+        return "資料不足，無法繪圖", 400
+
+    return send_file(
+        io.BytesIO(img_data),
+        mimetype='image/jpeg',
+        as_attachment=False,
+        download_name=f"{stock_no}_{field}.jpg"
+    )

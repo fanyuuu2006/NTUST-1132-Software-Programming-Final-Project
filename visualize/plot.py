@@ -11,7 +11,7 @@ rcParams['font.sans-serif'] = ['Microsoft YaHei', 'SimHei']
 rcParams['axes.unicode_minus'] = False  # 確保負號能顯示
 
 
-def plot_stock_trend(
+def trend(
     stock: Stock,
     field: DAILY_DATA_KEYS,
     date_range: Optional[tuple[str, str]] = None,
