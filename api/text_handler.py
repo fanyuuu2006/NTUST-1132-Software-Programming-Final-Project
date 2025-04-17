@@ -25,6 +25,12 @@ features: dict[str, dict[Literal["discription", "format", "handler"], str | Feat
             text="📖 指令列表\n\n" + "\n\n".join([
                 f"🟢 {cmd}: {data['discription']}\n　📌{data['format']}" for cmd, data in features.items() if cmd != "/help"
             ])
+        ),
+            TextSendMessage(
+                    text=(
+                "ℹ️ 小提醒：\n"
+                "`?` 代表為可選參數，不一定要填寫唷！🤗"
+            )
         )
         ]
     },
@@ -54,9 +60,9 @@ features: dict[str, dict[Literal["discription", "format", "handler"], str | Feat
                 )
             ]
     },
-    "/info": {
+    "/search": {
         "discription": "查詢股票相關資訊",
-        "format": "/info <股票代號> <欄位名稱>",
+        "format": "/search <股票代號> <欄位名稱?>",
         "handler": lambda text: [
             TextSendMessage(
                 text=(
@@ -68,15 +74,19 @@ features: dict[str, dict[Literal["discription", "format", "handler"], str | Feat
         ] if len(text.split(' ')) > 2 else [
             TextSendMessage(
                 text=(
-                    f"📊 股票資訊查詢\n"
-                    f"📌 股票代號：{text.split(' ')[1]}\n"
-                    f"📘 股票資訊：\n" +
+                    f"📊 股票資訊總覽\n"
+                    f"📌 股票代號：{text.split()[1]}\n\n" +
+                    "📘 一般資訊：\n" +
                     "\n\n".join([
-                        f"　📌 {key}: {value[0]}" for key, value in TaiwanStockExchangeCrawler.no(text.split(' ')[1]).get_data().items() if key != "每日交易資料"
+                        f"　📌 {key}: {value}"
+                        for key, value in TaiwanStockExchangeCrawler.no(text.split()[1]).get_data().items()
+                        if key != "每日交易資料"
                     ]) +
-                    f"\n\n每日交易資料：\n" +
+                    "\n\n📘 每日交易資料：\n" +
                     "\n\n".join([
-                        f"　📌 {key}: {value[0]}" for data in TaiwanStockExchangeCrawler.no(text.split(' ')[1]).get("每日交易資料")[0] for key, value in data.items()
+                        f"　📌 {key}: {value}"
+                        for data in TaiwanStockExchangeCrawler.no(text.split()[1]).get("每日交易資料")[0]
+                        for key, value in data.items()
                     ])
                 )
             )
@@ -95,13 +105,17 @@ def text_handler(text: str) -> list[SendMessage]:
             try:
                 return feature["handler"](text)
             except IndexError:
-                return [TextSendMessage(text=f"❌ 指令處理失敗：\n{feature['discription']}\n指令參數不夠")]
+                return [TextSendMessage(
+                    text=f"❌ 指令參數不足\n📖 說明：{feature['discription']}\n💡 範例：{feature['format']}"
+                )]
             except Exception as e:
-                return [TextSendMessage(text=f"❌ 指令處理失敗：\n{feature['discription']}\n{str(e)}")]
+                return [TextSendMessage(
+                    text=f"❌ 發生錯誤：{str(e)}\n📖 功能：{feature['discription']}"
+                )]
     except Exception as e:
         return [
         TextSendMessage(text=f"❌ 發生錯誤了...\n📛 錯誤內容：{e}"),
-        TextSendMessage(text="請確認指令格式是否正確！\n輸入 /help 查看可用指令 😎")
+        TextSendMessage(text="請檢查指令輸入格式！\n輸入 /help 查看可用指令 😎")
     ]
     # 若無匹配功能，則從 dialoglib.json 查找回覆
     with open("json/dialoglib.json", "r", encoding="utf-8") as f:
