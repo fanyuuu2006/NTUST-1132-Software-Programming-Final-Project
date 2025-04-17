@@ -57,13 +57,15 @@ def text_handler(text: str) -> list[SendMessage]:
     """
     try:
         cmd = text.split(' ')[0]
+        if cmd == "/":
+            return [TextSendMessage(text="/ 指令之間可沒有空格喔🤌")]
         if cmd.lower() in features:
             feature = features[cmd]
             try:
                 return feature["controller"](text)
             except IndexError:
                 return [TextSendMessage(
-                    text=f"❌ 指令參數不足\n📖 說明：{feature['discription']}\n💡 範例：{feature['format']}"
+                    text=f"❌ 指令參數不足\n📖 說明：{feature['discription']}\n💡 格式：{feature['format']}"
                 )]
             except Exception as e:
                 return [TextSendMessage(
