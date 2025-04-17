@@ -103,3 +103,17 @@ real_time_fields: dict[REAL_TIME_KEYS, REAL_TIME_FIELDS]={
     "昨日收盤價": "y",
     "目前成交價": "z"
 }
+
+
+class STOCK_DATA(TypedDict):
+    股票代碼: str
+    股票名稱: str
+    股票簡稱: str
+    開盤價: str
+    最高價: str
+    最低價: str
+    收盤價: str
+    漲跌價差: str
+    成交股數: str
+    成交金額: str
+    成交筆數: str

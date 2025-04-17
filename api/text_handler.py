@@ -1,7 +1,8 @@
 import json
 from linebot.models import SendMessage, TextSendMessage
 from typing import Callable, Literal
-from crawler import TaiwanStockExchangeCrawler
+from crawler import TaiwanStockExchangeCrawler, Stock
+from crawler.models import DAILY_DATA_KEYS
 
 
 FeatureHandler = Callable[[str], list[SendMessage]]
@@ -62,7 +63,7 @@ features: dict[str, dict[Literal["discription", "format", "handler"], str | Feat
     },
     "/search": {
         "discription": "查詢股票相關資訊",
-        "format": "/search <股票代號> <欄位名稱?>",
+        "format": "/search <股票代號> <欄位名稱?> <每日交易資料欄位名稱?> <起始日期?> <結束日期?>",
         "handler": lambda text: [
             TextSendMessage(
                 text=(
@@ -91,7 +92,33 @@ features: dict[str, dict[Literal["discription", "format", "handler"], str | Feat
                 )
             )
         ]
-    }
+    },
+    "/field": {
+        "discription": "查詢所有可用欄位名稱",
+        "format": "/field",
+        "handler": lambda _: [
+            TextSendMessage(
+                text=(
+                    f"📜 股票之可查詢欄位名稱\n\n" +
+                    "\n".join([
+                        f"　📌 {key}"
+                        for key in Stock.KEYS
+                        if key != "暫無用途"
+                    ])
+                )
+            ),
+            TextSendMessage(
+                text=(
+                    f"📜 股票之每日交易資料可查詢欄位名稱\n\n" +
+                    "\n".join([
+                        f"　📌 {key}"
+                        for key in DAILY_DATA_KEYS
+                        if key != "日期"
+                    ])
+                )
+            )
+        ]
+    },
 }
 
 def text_handler(text: str) -> list[SendMessage]:

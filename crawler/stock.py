@@ -1,10 +1,10 @@
-from typing import Literal, Optional
+from typing import Literal, Optional, Union
 
 from .models import DAILY_DATA_JSON, DAILY_DATA_KEYS,  REAL_TIME_JSON, REAL_TIME_KEYS, real_time_fields
 
 class Stock:
     """股票"""
-    KEYS = REAL_TIME_KEYS | Literal["每日交易資料"]
+    KEYS = Union[REAL_TIME_KEYS, Literal["每日交易資料"]]
     
 
     def __init__(self, stock_no: str=None):
@@ -24,7 +24,7 @@ class Stock:
         self.__data: dict[Stock.KEYS, str| list[dict[DAILY_DATA_KEYS, str]]] = {}
         
     def __str__(self) -> str:
-        return f"{self.__no}: {self.get("股票簡稱")[0] or '無名稱'}"
+        return f"{self.__no}: {self.get('股票簡稱')[0] or '無名稱'}"
     
     def set_data(self, daily_data: DAILY_DATA_JSON, real_time_data:REAL_TIME_JSON) -> None:
         """
@@ -58,7 +58,7 @@ class Stock:
     def get_no(self) -> str:
         return self.__no
     
-    def get(self, key:KEYS, daily_data_key: Optional[DAILY_DATA_KEYS]=None, date_range: Optional[tuple[str, str]] = None) -> list[str]:
+    def get(self, key:KEYS, daily_data_key: Optional[DAILY_DATA_KEYS]=None, date_range: Optional[tuple[str, str]] = None) -> list[str] | list[list[dict]]:
         if key not in self.__data:
             raise KeyError(f"無此欄位：{key}")
         if not self.__data:
@@ -70,7 +70,7 @@ class Stock:
             if date_range:
                 start, end = date_range
                 return [data[daily_data_key] for data in self.__data["每日交易資料"] if start <= data["日期"] <= end]
-            return [data[daily_data_key] for data in self.__data["每日交易資料"]]
+            return [[data[daily_data_key] for data in self.__data["每日交易資料"]]]
         
         return [self.__data[key]]
     
