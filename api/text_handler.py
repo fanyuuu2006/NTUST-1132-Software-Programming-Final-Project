@@ -49,7 +49,7 @@ features: dict[str, dict[Literal["discription", "format", "controller"], str | F
     },
 }
 
-def handler(text: str) -> list[SendMessage]:
+def text_handler(text: str) -> list[SendMessage]:
     """
     根據傳入的文字，取得對應的 LINE 回覆訊息。
     """
