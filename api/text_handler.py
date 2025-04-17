@@ -24,6 +24,7 @@ features: dict[str, dict[Literal["discription", "format", "controller"], str | F
                 "1️⃣ 指令與參數要以空格區隔！\n"
                 "2️⃣`?` 代表 可選參數 ，不一定要填寫唷！😘\n"
                 "3️⃣ 日期格式為 `YYYYMMDD`，例如：20250417\n"
+                "4️⃣ 日期沒給的話預設為今天喔💙\n"
             )
         )
         ]
