@@ -57,9 +57,9 @@ def plot(stock_no):
         return "請提供查詢的時間間隔", 400
     
     field = request.args.get('field')
-    interval = request.args.get('interval')
     start = request.args.get('start')
     end = request.args.get('end')
+    interval = request.args.get('interval')
 
     # 組合日期範圍（可為 None）
     date_range = (start, end) if start and end else None

@@ -25,6 +25,7 @@ features: dict[str, dict[Literal["discription", "format", "controller"], str | F
                 "2️⃣`?` 代表 可選參數 ，不一定要填寫唷！😘\n"
                 "3️⃣ 日期格式為 `YYYYMMDD`，例如：20250417\n"
                 "4️⃣ 日期沒給的話預設為今天喔💙\n"
+                "5️⃣ 間隔單位 分為 日、月 預設為日\n"
             )
         )
         ]
@@ -49,6 +50,11 @@ features: dict[str, dict[Literal["discription", "format", "controller"], str | F
         "discription": "查詢期間內每日交易資訊",
         "format": "/daily <股票代號> <起始日期?> <結束日期?>",
         "controller": daily.controller
+    },
+    "/pricetrend": {
+        "discription": "獲取期間內收盤價走勢圖",
+        "format": "/pricetrend <股票代號> <起始日期?> <結束日期?> <間隔單位?>",
+        "controller": pricetrend.controller
     },
 }
 

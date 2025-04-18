@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 
-def today(fmt="%Y%m%d") -> str:
+def today(fmt="%Y%m%d") -> datetime:
     """
     取得今天的日期字串，格式為 YYYYMMDD。
     
