@@ -65,7 +65,10 @@ def text_handler(text: str) -> list[SendMessage]:
             try:
                 messages = feature["controller"](text)
                 if len(messages) > 5:
-                    return [TextSendMessage(text="🙇 不好意思，回覆訊息太多啦，請精簡查詢或分段查詢～")]
+                    return [
+                        TextSendMessage(text="🙇 不好意思，回覆訊息太多啦🤒"),
+                        TextSendMessage(text="我最多只能回覆 5 則訊息喔！\n請您分段或精簡查詢內容🥹")
+                        ]
                 return messages
 
             except IndexError:
