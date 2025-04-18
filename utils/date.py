@@ -12,7 +12,9 @@ def today(fmt="%Y%m%d") -> datetime:
     回傳:
         str: 今天的日期字串。
     """
-    return datetime.today().strftime(fmt)
+    td = datetime.today()
+    td.strftime(fmt)  # 格式化日期字串
+    return td
 
 
 
