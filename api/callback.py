@@ -7,9 +7,7 @@ from flask import Flask, abort, request, send_file
 import os
 from dotenv import load_dotenv
 
-from crawler import TaiwanStockExchangeCrawler
 from visualize import trend
-
 from .text_handler import text_handler
 
 # 讀取 .env 環境變數
@@ -48,23 +46,23 @@ def handle_text_message(event: MessageEvent):
         text_handler(event.message.text)
     )
 
-@app.route('/plot/<stock_no>', methods=['GET'])
-def plot(stock_no):
+@app.route('/plot', methods=['GET'])
+def plot():
     # 取得查詢參數
-    if "field" not in request.args:
-        return "請提供查詢的欄位", 400
-    if "interval" not in request.args:
-        return "請提供查詢的時間間隔", 400
-    
-    field = request.args.get('field')
-    start = request.args.get('start')
-    end = request.args.get('end')
-    interval = request.args.get('interval')
+    title = request.args.get('title')
+    x_label = request.args.get('x_label')
+    y_label = request.args.get('y_label')
+    data = request.args.get('data')
+    x_data = [d[0] for d in data]
+    y_data = [d[1] for d in data]
 
-    # 組合日期範圍（可為 None）
-    date_range = (start, end) if start and end else None
-
-    img_data = trend(TaiwanStockExchangeCrawler.no(stock_no, date_range), field=field, date_range=date_range, interval=interval)
+    img_data = trend(
+        title=title,
+        x_label=x_label,
+        y_label=y_label,
+        x_data=x_data,
+        y_data=y_data,
+    )
 
     if img_data is None:
         return "資料不足，無法繪圖", 400
@@ -73,5 +71,5 @@ def plot(stock_no):
         io.BytesIO(img_data),
         mimetype='image/jpeg',
         as_attachment=False,
-        download_name=f"{stock_no}_{field}.jpg"
+        download_name=f"{title}.jpg"
     )

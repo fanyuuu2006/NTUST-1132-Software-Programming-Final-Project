@@ -1,5 +1,6 @@
-from linebot.models import SendMessage, ImageSendMessage, TextSendMessage
-
+import json
+from linebot.models import SendMessage, ImageSendMessage
+from crawler import TaiwanStockExchangeCrawler
 import utils
 def controller(text: str) -> list[SendMessage]:
     """
@@ -8,18 +9,22 @@ def controller(text: str) -> list[SendMessage]:
     # 解析使用者輸入的文字，取得股票代號
     part = text.split(" ")
     stock_no = part[1]
-    start_date = part[2] if len(part) > 2 else utils.date.today().replace(day=1)
+    start_date = part[2] if len(part) > 2 else utils.date.today()[:6]+"01"
     end_date = part[3] if len(part) > 3 else utils.date.today()
     interval = part[4] if len(part) > 4 else "day"
+    
+    stock = TaiwanStockExchangeCrawler.no(stock_no, date_range=(start_date, end_date))
+    stock_data = stock.daily_field_transform(
+        field="收盤價",
+        interval=interval,
+        date_range=(start_date, end_date),
+        )
+    
 
-    url = f'https://dobujio.vercel.app/plot/{stock_no}?field=收盤價&start={start_date}&end={end_date}&interval={interval}'
-    # 回覆訊息列表
+    url = f"https://dobujio.vercel.app/plot?title={stock_no} {stock.get("股票簡稱")[0]}-收盤價趨勢圖&x_label=日期&y_label=收盤價&data={json.dumps(stock_data, ensure_ascii=False)}"
     return [
-            TextSendMessage(
-                text=url
-            ),
-            # ImageSendMessage(
-            #         original_content_url=url,
-            #         preview_image_url=url
-            #     )
+            ImageSendMessage(
+                    original_content_url=url,
+                    preview_image_url=url
+                )
             ]

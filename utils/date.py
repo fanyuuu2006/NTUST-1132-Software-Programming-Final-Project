@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 
-def today(fmt="%Y%m%d") -> datetime:
+def today(fmt="%Y%m%d") -> str:
     """
     取得今天的日期字串，格式為 YYYYMMDD。
     
@@ -13,8 +13,8 @@ def today(fmt="%Y%m%d") -> datetime:
         str: 今天的日期字串。
     """
     td = datetime.today()
-    td.strftime(fmt)  # 格式化日期字串
-    return td
+    return td.strftime(fmt)  # 格式化日期字串
+    
 
 
 

@@ -72,4 +72,51 @@ class Stock:
         
         return [self.__data[key]]
     
+    
+    def daily_field_transform(
+        self,
+        field: DAILY_DATA_KEYS,
+        interval: Literal["day", "month"],
+        date_range: Optional[tuple[str, str]] = None
+    ) -> Optional[list[list[str,float]]]:
+        """
+        擷取每日交易資料中指定欄位的資料，並根據時間間隔進行聚合（每日或每月）。
+
+        參數:
+            field (DAILY_DATA_KEYS): 欲擷取的欄位，如 "收盤價"。
+            interval (Literal["day", "month"]): 時間間隔，日或月。
+            date_range (Optional[tuple[str, str]]): 起始與結束日期，格式為 YYYYMMDD。
+
+        回傳:
+        Optional[list[list[str,float]]] : 日期與對應的值的列表。
+        """
+        
+        raw_data: list[dict[DAILY_DATA_KEYS, str]] = self.get("每日交易資料", date_range=date_range)[0]
+
+        # 資料整理與轉換
+        sorted_data: list[list[str, float]] = []
+        for entry in raw_data:
+            date = entry.get("日期")
+            val_str = entry.get(field, "")
+            try:
+                val = float(val_str.replace(",", ""))
+                sorted_data.append([date, val])
+            except (ValueError, TypeError):
+                continue
+
+        if not sorted_data:
+            return None
+
+        # 資料排序
+        sorted_data.sort(key=lambda x: x[0])
+
+        # 聚合資料
+        if interval == "month":
+            monthly_data: dict[str, list[float]] = {}
+            for date, value in sorted_data:
+                yyyymm = date[:6]
+                monthly_data.setdefault(yyyymm, []).append(value)
+            return [[yyyymm, sum(values) / len(values)] for yyyymm, values in monthly_data.items()]
+        else:
+            return sorted_data
 
