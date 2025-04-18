@@ -1,4 +1,3 @@
-import time
 import requests
 from typing import Literal, Optional
 
@@ -44,12 +43,16 @@ class TaiwanStockExchangeCrawler:
         headers = {'User-Agent': 'Mozilla/5.0'}
         
         try:
-            response = requests.get(url, params=params, headers=headers)
+            response = requests.get(url, params=params, headers=headers, timeout=10) # vercel 部屬的api TimeOut 10s 
             data: DAILY_DATA_JSON | REAL_TIME_JSON= response.json()
         except ValueError:
             raise RuntimeError(f"無法解析 JSON：{response.text}")
-        except requests.RequestException as e:
-            raise RuntimeError(f"請求失敗：{e}")
+        except requests.exceptions.Timeout:
+            print("請求超時，請減少請求資料量或稍後再試")
+            return None
+        except requests.exceptions.RequestException as e:
+            print(f"發生錯誤: {e}")
+            return None
         
         if "stat" not in data and 'rtmessage' not in data:
             raise RuntimeError("API 回傳格式錯誤，無法解析")
@@ -125,7 +128,6 @@ class TaiwanStockExchangeCrawler:
                 result = data
             else:
                 result["data"].extend(data.get("data", []))  # 合併每月資料
-            time.sleep(0.1) # 等待 0.1 秒，避免 API 被鎖
         return result
 
     @classmethod
