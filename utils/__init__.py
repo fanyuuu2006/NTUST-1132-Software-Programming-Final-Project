@@ -1,5 +1,6 @@
 from . import (
     date,
     url,
+    data
 )
-__all__ = ["date", "url"]
+__all__ = ["date", "url", "data"]

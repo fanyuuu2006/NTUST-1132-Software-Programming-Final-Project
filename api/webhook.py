@@ -1,5 +1,4 @@
 import io
-import json
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
@@ -8,6 +7,7 @@ from flask import Flask, abort, request, send_file
 import os
 from dotenv import load_dotenv
 
+import utils
 from visualize import trend
 from .reply_handler import reply_handler
 
@@ -53,7 +53,8 @@ def plot():
     title = request.args.get('title')
     x_label = request.args.get('x_label')
     y_label = request.args.get('y_label')
-    data = json.loads(request.args.get('data'))
+    token = request.args.get('token')
+    data = utils.data.decompress_data(token)
     x_data = [d[0] for d in data]
     y_data = [d[1] for d in data]
 

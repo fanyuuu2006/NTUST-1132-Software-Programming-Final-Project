@@ -1,4 +1,3 @@
-import json
 from linebot.models import SendMessage, ImageSendMessage, TextSendMessage
 import urllib.parse
 from crawler import TaiwanStockExchangeCrawler
@@ -25,7 +24,7 @@ def controller(text: str) -> list[SendMessage]:
     url = f"https://dobujio.vercel.app/plot?title={urllib.parse.quote(stock_no + '-' + stock.get('股票簡稱')[0] + '-收盤價趨勢圖')}" \
         f"&x_label={urllib.parse.quote('日期')}" \
         f"&y_label={urllib.parse.quote('收盤價')}" \
-        f"&data={urllib.parse.quote(json.dumps(stock_data, ensure_ascii=False))}"
+        f"&token={utils.data.compress_data(stock_data)}"
         
     if len(url) > 2000:
         raise ValueError("❗資料量過大，超過圖表產生限制，請縮短日期區間再試一次 🙏")
