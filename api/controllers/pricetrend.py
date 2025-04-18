@@ -1,5 +1,5 @@
 import json
-from linebot.models import SendMessage, ImageSendMessage
+from linebot.models import SendMessage, ImageSendMessage, TextSendMessage
 import urllib.parse
 from crawler import TaiwanStockExchangeCrawler
 import utils
@@ -26,9 +26,21 @@ def controller(text: str) -> list[SendMessage]:
         f"&x_label={urllib.parse.quote('日期')}" \
         f"&y_label={urllib.parse.quote('收盤價')}" \
         f"&data={urllib.parse.quote(json.dumps(stock_data, ensure_ascii=False))}"
+        
+    if len(url) > 2000:
+        raise ValueError("❗資料量過大，超過圖表產生限制，請縮短日期區間再試一次 🙏")
+        
     return [
-            ImageSendMessage(
-                    original_content_url=url,
-                    preview_image_url=url
-                )
-            ]
+    TextSendMessage(
+        text=(
+            f"📈 收盤價走勢圖查詢\n"
+            f"📌 股票代號：{stock_no}\n"
+            f"📅 日期區間：{start_date} ~ {end_date}\n"
+            f"🔗 走勢圖連結：{utils.url.shorten_url(url)}\n\n"
+        )
+    ),
+    ImageSendMessage(
+        original_content_url=url,
+        preview_image_url=url
+    )
+]

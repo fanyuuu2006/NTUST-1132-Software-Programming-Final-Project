@@ -56,7 +56,7 @@ class TaiwanStockExchangeCrawler:
 
         for key in ["stat", "rtmessage"]:
             if key in data and data[key] != "OK":
-                raise RuntimeError(f"API 回傳錯誤：[{key}: {data[key]}]")
+                raise RuntimeError(f"API 回傳錯誤：[{key}: {data[key]}] {params}")
 
         return data
 

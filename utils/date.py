@@ -81,7 +81,7 @@ def month_range(start: str, end: str) -> list[str]:
             else:
                 start_dt = start_dt.replace(month=start_dt.month + 1)
                 
-        return list(result)
+        return sorted(list(result))  # 排序
     except (ValueError, TypeError) as e:
         raise ValueError(f"無法產生月份範圍：{start} ~ {end}，錯誤：{e}")
 

@@ -1,12 +1,13 @@
 import json
 from crawler import TaiwanStockExchangeCrawler
 import urllib.parse
+import utils
 
 
 stock_no = "2330"
-start_date = "20240401"
-end_date = "20240419"
-interval = "day"
+start_date = "20220101"
+end_date = "20250419"
+interval = "month"
 stock = TaiwanStockExchangeCrawler.no(stock_no, date_range=(start_date, end_date))
 stock_data = stock.daily_field_transform(
     field="收盤價",
@@ -21,4 +22,6 @@ url = f"https://dobujio.vercel.app/plot?title={urllib.parse.quote(stock_no + '-'
       f"&y_label={urllib.parse.quote('收盤價')}" \
       f"&data={urllib.parse.quote(json.dumps(stock_data, ensure_ascii=False))}"
 
-print(url)
+print(utils.url.shorten_url(url))
+# with open("./json/test.json", "w", encoding="utf-8") as f:
+#     f.write(json.dumps(utils.date.month_range(start=start_date, end=end_date), ensure_ascii=False, indent=4))

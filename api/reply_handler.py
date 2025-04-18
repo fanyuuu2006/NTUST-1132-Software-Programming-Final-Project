@@ -28,6 +28,7 @@ features: dict[str, dict[Literal["discription", "format", "controller"], str | F
                 "3️⃣ 日期格式為 `YYYYMMDD`，例如：20250417\n"
                 "4️⃣ 日期沒給的話預設為今天喔💙\n"
                 "5️⃣ 間隔單位 分為 day、month 預設為 day\n"
+                "6️⃣ 若圖表無法顯示，請確認網路狀況或將網址貼到瀏覽器開啟試試看～\n"
             )
         )
         ]
@@ -60,15 +61,26 @@ features: dict[str, dict[Literal["discription", "format", "controller"], str | F
     },
 }
 
-def text_handler(text: str) -> list[SendMessage]:
+def reply_handler(text: str) -> list[SendMessage]:
     """
     根據傳入的文字，取得對應的 LINE 回覆訊息。
     """
     try:
+        text = text.strip()
         cmd = text.split(' ')[0]
         if cmd == "/":
             return [TextSendMessage(text="/ 與 指令之間可沒有空格喔🤌")]
-        if cmd.lower() in features:
+        if cmd.lower() not in features:
+            # 若無匹配功能，則從 dialoglib.json 查找回覆
+            with open("json/dialoglib.json", "r", encoding="utf-8") as f:
+                dialoglib: dict = json.load(f)
+                for key, value in dialoglib.items():
+                    if text in key:
+                        return [TextSendMessage(text=value)]
+                else:
+                    return [TextSendMessage(text="玩股票都不揪喔❓\n輸入 /help 來查看可用的指令！😎😎")]
+
+        else:
             feature = features[cmd]
             try:
                 messages = feature["controller"](text)
@@ -81,21 +93,31 @@ def text_handler(text: str) -> list[SendMessage]:
 
             except IndexError:
                 return [TextSendMessage(
-                    text=f"❌ 指令參數不足\n📖 說明：{feature['discription']}\n💡 格式：{feature['format']}"
+                    text=(
+                        f"⚠️ 參數好像不太夠喔！\n\n"
+                        f"📖 功能說明：{feature['discription']}\n"
+                        f"🧾 正確格式：{feature['format']}\n\n"
+                        f"👉 快試試看輸入正確格式吧～"
+                    )
                 )]
             except Exception as e:
-                return [TextSendMessage(
-                    text=f"❌ 發生錯誤：{str(e)}\n📖 功能：{feature['discription']}"
-                )]
+                return [
+                    TextSendMessage(
+                    text=(
+                        f"😵‍💫 糟糕！剛剛好像發生了錯誤...\n\n"
+                        f"🔍 功能：{feature['discription']}\n"
+                        f"📛 錯誤內容：{str(e)}\n\n"
+                    )),
+                    TextSendMessage(
+                        text=(
+                            f"你可以稍後再試，或回報問題給開發者 🙇"
+                            f"開發者的聯絡方式：\n"
+                            f"https://www.instagram.com/fan._.yuuu/\n"
+                            f"（請附上錯誤內容）\n\n"
+                        ))
+                ]
     except Exception as e:
         return [
         TextSendMessage(text=f"❌ 發生錯誤了...\n📛 錯誤內容：{e}"),
         TextSendMessage(text="請檢查指令輸入格式！\n輸入 /help 查看可用指令 😎")
     ]
-    # 若無匹配功能，則從 dialoglib.json 查找回覆
-    with open("json/dialoglib.json", "r", encoding="utf-8") as f:
-        dialoglib: dict = json.load(f)
-        if text in dialoglib:
-            return [TextSendMessage(text=dialoglib[text])]
-        else:
-            return [TextSendMessage(text="玩股票都不揪喔❓\n輸入 /help 來查看可用的指令！😎😎")]
