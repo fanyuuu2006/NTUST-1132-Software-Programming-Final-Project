@@ -21,7 +21,7 @@ def controller(text: str) -> list[SendMessage]:
         )
     
 
-    url = f"https://dobujio.vercel.app/plot?title={stock_no} {stock.get('股票簡稱')[0]}-收盤價趨勢圖&x_label=日期&y_label=收盤價&data={json.dumps(stock_data, ensure_ascii=False)}"
+    url = f"https://dobujio.vercel.app/plot?title={stock_no}-{stock.get('股票簡稱')[0]}-收盤價趨勢圖&x_label=日期&y_label=收盤價&data={json.dumps(stock_data, ensure_ascii=False)}"
     return [
             ImageSendMessage(
                     original_content_url=url,
