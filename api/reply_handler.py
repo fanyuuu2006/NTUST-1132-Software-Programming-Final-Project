@@ -105,7 +105,7 @@ def reply_handler(text: str) -> list[SendMessage]:
                     text=(
                         f"😵‍💫 糟糕！剛剛好像發生了錯誤...\n\n"
                         f"🔍 功能：{feature['discription']}\n"
-                        f"📛 錯誤內容：{str(e)}\n\n"
+                        f"📛 錯誤內容：{str(e)}"
                     )),
                     TextSendMessage(
                         text=(

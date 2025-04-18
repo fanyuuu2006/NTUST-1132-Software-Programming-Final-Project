@@ -48,7 +48,7 @@ class TaiwanStockExchangeCrawler:
         except ValueError:
             raise RuntimeError(f"無法解析 JSON：{response.text}")
         except requests.exceptions.Timeout:
-            print("請求超時，請減少請求資料量或稍後再試")
+            print("內部請求超時，請稍後再試")
             return None
         except requests.exceptions.RequestException as e:
             print(f"發生錯誤: {e}")
