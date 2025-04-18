@@ -63,7 +63,11 @@ def text_handler(text: str) -> list[SendMessage]:
         if cmd.lower() in features:
             feature = features[cmd]
             try:
-                return feature["controller"](text)
+                messages = feature["controller"](text)
+                if len(messages) > 5:
+                    return [TextSendMessage(text="🙇 不好意思，回覆訊息太多啦，請精簡查詢或分段查詢～")]
+                return messages
+
             except IndexError:
                 return [TextSendMessage(
                     text=f"❌ 指令參數不足\n📖 說明：{feature['discription']}\n💡 格式：{feature['format']}"
