@@ -5,7 +5,7 @@ import utils
 
 
 stock_no = "2330"
-start_date = "20240101"
+start_date = "20250101"
 end_date = "20250419"
 interval = "day"
 stock = TaiwanStockExchangeCrawler.no(stock_no, date_range=(start_date, end_date))

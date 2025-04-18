@@ -40,7 +40,11 @@ class TaiwanStockExchangeCrawler:
 
     @classmethod
     def fetch(cls, url: str, params: dict) -> dict:
-        headers = {'User-Agent': 'Mozilla/5.0'}
+        headers = {
+            'User-Agent': 'Mozilla/5.0',
+            "Referer": "https://www.twse.com.tw/",
+            "Accept": "application/json",
+            }
         
         try:
             response = requests.get(url, params=params, headers=headers, timeout=10) # vercel 部屬的api TimeOut 10s 

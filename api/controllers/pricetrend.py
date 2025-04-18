@@ -39,8 +39,8 @@ def controller(text: str) -> list[SendMessage]:
             f"🔗 走勢圖連結：{utils.url.shorten_url(url)}\n\n"
         )
     ),
-    ImageSendMessage(
-        original_content_url=url,
-        preview_image_url=url
-    )
+    # ImageSendMessage(
+    #     original_content_url=url,
+    #     preview_image_url=url
+    # )
 ]
