@@ -1,5 +1,5 @@
 {
   "version": 2,
-  "builds": [{ "src": "api/callback.py", "use": "@vercel/python" }],
-  "routes": [{ "src": "/(.*)", "dest": "api/callback.py" }]
+  "builds": [{ "src": "api/webhook.py", "use": "@vercel/python" }],
+  "routes": [{ "src": "/(.*)", "dest": "api/webhook.py" }]
 }
