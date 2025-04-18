@@ -1,3 +1,4 @@
+from datetime import datetime
 from io import BytesIO
 from typing import Literal, Optional
 import matplotlib.pyplot as plt
@@ -30,7 +31,7 @@ def trend(
     Optional[bytes]: 返回趨勢圖的 JPEG 格式二進位資料，若資料不完整則返回 None。
     """
 
-    dates = [data["日期"] for data in stock.get(key="每日交易資料", date_range=date_range)[0]]
+    dates = [datetime.strptime(data["日期"], "%Y%m%d") for data in stock.get(key="每日交易資料", date_range=date_range)[0]]
     values = [data[field] for data in stock.get(key="每日交易資料", date_range=date_range)[0]]
 
     # 清理資料
@@ -51,13 +52,13 @@ def trend(
     if interval == "month":
         month_data: dict[str, list[float]] = {}
         for date_str, value in sorted(zip(cleaned_dates, cleaned_values)):
-            yyyymm = date_str[:6] # 取出年份與月份
+            yyyymm = datetime.strptime(date_str, "%Y%m") # 取出年份與月份
             month_data.setdefault(yyyymm, []).append(value)
         cleaned_dates = list(month_data.keys())
         cleaned_values = [sum(vals) / len(vals) for vals in month_data.values()]
 
     # 開始畫圖
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(max(8, len(cleaned_dates) * 0.5), 5))
     for i in range(1, len(cleaned_dates)):
         prev_val, curr_val = cleaned_values[i - 1], cleaned_values[i]
         prev_date, curr_date = cleaned_dates[i - 1], cleaned_dates[i]
