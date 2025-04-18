@@ -1,4 +1,5 @@
 import requests
+import time
 from typing import Literal, Optional
 
 import utils
@@ -99,8 +100,14 @@ class TaiwanStockExchangeCrawler:
         report_code: str = cls.REPORTS[report_name]
 
         result: dict = {}
+        # 記錄開始時間
+        start_time = time.time()
         
         for date in utils.date.month_range(*date_range):
+            # 檢查是否超過9秒
+            if time.time() - start_time > 9:
+                raise RuntimeError("請求時間過長，請減少查詢範圍")
+            
             params: dict[str, str] = {
                 "response": response_format,
                 "date": date,
