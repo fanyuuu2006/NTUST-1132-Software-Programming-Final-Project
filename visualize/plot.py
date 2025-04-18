@@ -35,7 +35,7 @@ def trend(
     values = [data[field] for data in stock.get(key="每日交易資料", date_range=date_range)[0]]
 
     # 清理資料
-    cleaned_dates: list[str] = []
+    cleaned_dates: list[datetime] = []
     cleaned_values: list[float] = []
     for date, val in zip(dates, values):
         try:
@@ -51,8 +51,8 @@ def trend(
     # 月統計平均
     if interval == "month":
         month_data: dict[str, list[float]] = {}
-        for date_str, value in sorted(zip(cleaned_dates, cleaned_values)):
-            yyyymm = datetime.strptime(date_str, "%Y%m") # 取出年份與月份
+        for date, value in sorted(zip(cleaned_dates, cleaned_values)):
+            yyyymm = date.strftime("%Y%m") # 取出年份與月份
             month_data.setdefault(yyyymm, []).append(value)
         cleaned_dates = list(month_data.keys())
         cleaned_values = [sum(vals) / len(vals) for vals in month_data.values()]
