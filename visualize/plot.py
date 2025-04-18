@@ -1,13 +1,16 @@
 from io import BytesIO
-from typing import Literal, Optional
+from typing import Optional
+import matplotlib
 import matplotlib.pyplot as plt
-from matplotlib import rcParams, font_manager
+from matplotlib import font_manager
 
+
+matplotlib.use('Agg')
 
 # 設定中文字型與負號顯示
 font_path = "assets/fonts/NotoSansTC-Regular.ttf"
 font_prop = font_manager.FontProperties(fname=font_path)
-plt.rcParams['font.family'] = font_prop.get_name()
+
 
 def trend(
     title: str,
@@ -29,6 +32,8 @@ def trend(
     回傳:
         Optional[bytes]: 圖片的位元資料（JPEG 格式），可供儲存或回傳至前端。若資料無效則回傳 None。
     """
+    if not x_data or not y_data or len(x_data) != len(y_data):
+        return None
 
     # 畫圖
     fig, ax = plt.subplots(figsize=(max(8, len(x_data) * 0.3), 5))
@@ -36,8 +41,10 @@ def trend(
     up_segments = []
     down_segments = []
 
+    x_indices = list(range(len(x_data))) # 讓 matplotlib 使用數字索引來表示 x 軸的位置
+
     for i in range(1, len(x_data)):
-        segment = ([x_data[i - 1], x_data[i]], [y_data[i - 1], y_data[i]])
+        segment = ([x_indices[i - 1], x_indices[i]], [y_data[i - 1], y_data[i]]) 
         if y_data[i] >= y_data[i - 1]:
             up_segments.append(segment)
         else:
@@ -53,11 +60,11 @@ def trend(
 
 
     ax.set_xticks(range(len(x_data)))
-    ax.set_xticklabels(x_data, rotation=60, ha='right')
+    ax.set_xticklabels(x_data, rotation=60, ha='right', fontproperties=font_prop)
 
-    ax.set_title(title)
-    ax.set_xlabel(y_label)
-    ax.set_ylabel(x_label)
+    ax.set_title(title, fontproperties=font_prop)
+    ax.set_xlabel(y_label, fontproperties=font_prop)
+    ax.set_ylabel(x_label, fontproperties=font_prop)
     ax.grid(True)
 
     fig.tight_layout()
