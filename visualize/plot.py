@@ -71,7 +71,7 @@ def trend(
         )
 
 
-    ax.set_xticklabels(ax.get_xticks(), rotation=45, ha='right')
+    ax.set_xticklabels(ax.set_xticklabels(), rotation=45, ha='right')
 
     # 標題與格式
     ax.set_title(f"{stock.get_no()} {stock.get('股票簡稱')} - {field} 趨勢圖")
