@@ -8,7 +8,7 @@ from crawler.models import DAILY_DATA_KEYS
 
 # 設定字型使用跨平台中文字型
 prop = font_manager.FontProperties(fname="assets/fonts/NotoSansTC-Regular.ttf")
-rcParams['font.sans-serif'] = ['Noto Sans CJK TC']
+rcParams['font.family'] = prop.get_name()
 rcParams['axes.unicode_minus'] = False  # 確保負號能顯示
 
 
