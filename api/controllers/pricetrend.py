@@ -12,7 +12,7 @@ def controller(text: str) -> list[SendMessage]:
     end_date = part[3] if len(part) > 3 else utils.date.today()
     interval = part[4] if len(part) > 4 else "day"
 
-    url = f'https://dobujio.vercel.app/plot/{stock_no}?start={start_date}&end={end_date}&interval={interval}'
+    url = f'https://dobujio.vercel.app/plot/{stock_no}?field=收盤價&start={start_date}&end={end_date}&interval={interval}'
     # 回覆訊息列表
     return [
             ImageSendMessage(

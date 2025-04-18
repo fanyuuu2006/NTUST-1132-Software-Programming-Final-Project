@@ -27,7 +27,7 @@ features: dict[str, dict[Literal["discription", "format", "controller"], str | F
                 "2️⃣`?` 代表 可選參數 ，不一定要填寫唷！😘\n"
                 "3️⃣ 日期格式為 `YYYYMMDD`，例如：20250417\n"
                 "4️⃣ 日期沒給的話預設為今天喔💙\n"
-                "5️⃣ 間隔單位 分為 日、月 預設為日\n"
+                "5️⃣ 間隔單位 分為 day、month 預設為 day\n"
             )
         )
         ]
