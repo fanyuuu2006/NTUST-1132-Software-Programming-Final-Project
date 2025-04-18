@@ -1,12 +1,13 @@
 from io import BytesIO
 from typing import Literal, Optional
 import matplotlib.pyplot as plt
-from matplotlib import rcParams
+from matplotlib import rcParams, font_manager
 
 from crawler import Stock
 from crawler.models import DAILY_DATA_KEYS
 
 # 設定字型使用跨平台中文字型
+prop = font_manager.FontProperties(fname="assets/fonts/NotoSansTC-Regular.ttf")
 rcParams['font.sans-serif'] = ['Noto Sans CJK TC']
 rcParams['axes.unicode_minus'] = False  # 確保負號能顯示
 
