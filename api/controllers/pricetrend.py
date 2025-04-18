@@ -18,8 +18,8 @@ def controller(text: str) -> list[SendMessage]:
             TextSendMessage(
                 text=url
             ),
-            ImageSendMessage(
-                    original_content_url=url,
-                    preview_image_url=url
-                )
+            # ImageSendMessage(
+            #         original_content_url=url,
+            #         preview_image_url=url
+            #     )
             ]
