@@ -8,7 +8,6 @@ from crawler.models import DAILY_DATA_KEYS
 
 # 設定字型使用跨平台中文字型
 prop = font_manager.FontProperties(fname="assets/fonts/NotoSansTC-Regular.ttf")
-rcParams['font.family'] = prop.get_name()
 rcParams['axes.unicode_minus'] = False  # 確保負號能顯示
 
 
@@ -75,7 +74,7 @@ def trend(
     ax.set_xticklabels(cleaned_dates , rotation=45, ha='right')
 
     # 標題與格式
-    ax.set_title(f"{stock.get_no()} {stock.get('股票簡稱')} - {field} 趨勢圖")
+    ax.set_title(f"{stock.get_no()} {stock.get('股票簡稱')} - {field} 趨勢圖", fontproperties=prop)
     ax.set_xlabel("日期")
     ax.set_ylabel(field)
     ax.grid(True)
