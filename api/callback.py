@@ -2,7 +2,7 @@ import io
 import json
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from flask import Flask, abort, request, send_file
 
 import os
@@ -44,7 +44,7 @@ def callback():
 def handle_text_message(event: MessageEvent):
     LINE_BOT.reply_message(
         event.reply_token,
-        reply_handler(event.message.text)
+        reply_handler(event.message.text.strip())
     )
 
 @app.route('/plot', methods=['GET'])

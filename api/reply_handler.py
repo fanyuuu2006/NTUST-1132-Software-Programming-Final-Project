@@ -66,7 +66,6 @@ def reply_handler(text: str) -> list[SendMessage]:
     根據傳入的文字，取得對應的 LINE 回覆訊息。
     """
     try:
-        text = text.strip()
         cmd = text.split(' ')[0]
         if cmd == "/":
             return [TextSendMessage(text="/ 與 指令之間可沒有空格喔🤌")]
@@ -113,7 +112,7 @@ def reply_handler(text: str) -> list[SendMessage]:
                             f"你可以稍後再試，或回報問題給開發者 🙇"
                             f"開發者的聯絡方式：\n"
                             f"https://www.instagram.com/fan._.yuuu/\n"
-                            f"（請附上錯誤內容）\n\n"
+                            f"（請附上錯誤內容）"
                         ))
                 ]
     except Exception as e:

@@ -5,8 +5,9 @@ from matplotlib import rcParams, font_manager
 
 
 # 設定中文字型與負號顯示
-prop = font_manager.FontProperties(fname="assets/fonts/NotoSansTC-Regular.ttf")
-rcParams['axes.unicode_minus'] = False
+font_path = "assets/fonts/NotoSansTC-Regular.ttf"
+font_prop = font_manager.FontProperties(fname=font_path)
+plt.rcParams['font.family'] = font_prop.get_name()
 
 def trend(
     title: str,
@@ -31,24 +32,32 @@ def trend(
 
     # 畫圖
     fig, ax = plt.subplots(figsize=(max(8, len(x_data) * 0.3), 5))
+    # 建立漲跌分組
+    up_segments = []
+    down_segments = []
+
     for i in range(1, len(x_data)):
-        prev_val, curr_val = y_data[i - 1], y_data[i]
-        prev_date, curr_date = x_data[i - 1], x_data[i]
-        color = 'red' if curr_val >= prev_val else 'green'
-        ax.plot(
-            [prev_date, curr_date],
-            [prev_val, curr_val],
-            color=color,
-            marker='o',
-            linestyle='-'
-        )
+        segment = ([x_data[i - 1], x_data[i]], [y_data[i - 1], y_data[i]])
+        if y_data[i] >= y_data[i - 1]:
+            up_segments.append(segment)
+        else:
+            down_segments.append(segment)
+
+    # 畫紅色上漲線段
+    for x, y in up_segments:
+        ax.plot(x, y, color='red', marker='o', linestyle='-')
+
+    # 畫綠色下跌線段
+    for x, y in down_segments:
+        ax.plot(x, y, color='green', marker='o', linestyle='-')
+
 
     ax.set_xticks(range(len(x_data)))
-    ax.set_xticklabels(x_data, rotation=60, ha='right', fontproperties=prop)
+    ax.set_xticklabels(x_data, rotation=60, ha='right')
 
-    ax.set_title(title, fontproperties=prop)
-    ax.set_xlabel(y_label, fontproperties=prop)
-    ax.set_ylabel(x_label, fontproperties=prop)
+    ax.set_title(title)
+    ax.set_xlabel(y_label)
+    ax.set_ylabel(x_label)
     ax.grid(True)
 
     fig.tight_layout()
