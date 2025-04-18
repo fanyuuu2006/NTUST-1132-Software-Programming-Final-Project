@@ -1,5 +1,6 @@
 import json
 from crawler import TaiwanStockExchangeCrawler
+import urllib.parse
 
 
 stock_no = "2330"
@@ -14,6 +15,10 @@ stock_data = stock.daily_field_transform(
     )
 
 
-url = f"https://dobujio.vercel.app/plot?title={stock_no}-{stock.get('股票簡稱')[0]}-收盤價趨勢圖&x_label=日期&y_label=收盤價&data={json.dumps(stock_data, ensure_ascii=False)}"
+
+url = f"https://dobujio.vercel.app/plot?title={urllib.parse.quote(stock_no + '-' + stock.get('股票簡稱')[0] + '-收盤價趨勢圖')}" \
+      f"&x_label={urllib.parse.quote('日期')}" \
+      f"&y_label={urllib.parse.quote('收盤價')}" \
+      f"&data={urllib.parse.quote(json.dumps(stock_data, ensure_ascii=False))}"
 
 print(url)
