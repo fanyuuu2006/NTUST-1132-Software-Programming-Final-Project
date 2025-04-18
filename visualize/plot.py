@@ -58,7 +58,7 @@ def trend(
         cleaned_values = [sum(vals) / len(vals) for vals in month_data.values()]
 
     # 開始畫圖
-    fig, ax = plt.subplots(figsize=(max(8, len(cleaned_dates) * 0.5), 5))
+    fig, ax = plt.subplots()
     for i in range(1, len(cleaned_dates)):
         prev_val, curr_val = cleaned_values[i - 1], cleaned_values[i]
         prev_date, curr_date = cleaned_dates[i - 1], cleaned_dates[i]
