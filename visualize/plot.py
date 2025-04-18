@@ -71,12 +71,12 @@ def trend(
         )
 
     ax.set_xticks(range(len(cleaned_dates)))
-    ax.set_xticklabels(cleaned_dates , rotation=45, ha='right')
+    ax.set_xticklabels(cleaned_dates , rotation=45, ha='right', fontproperties=prop)
 
     # 標題與格式
     ax.set_title(f"{stock.get_no()} {stock.get('股票簡稱')} - {field} 趨勢圖", fontproperties=prop)
-    ax.set_xlabel("日期")
-    ax.set_ylabel(field)
+    ax.set_xlabel("日期", fontproperties=prop)
+    ax.set_ylabel(field, fontproperties=prop)
     ax.grid(True)
     
     # 自動調整圖表佈局，避免標籤擁擠
