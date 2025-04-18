@@ -1,4 +1,4 @@
-from linebot.models import SendMessage, ImageSendMessage
+from linebot.models import SendMessage, ImageSendMessage, TextSendMessage
 
 import utils
 def controller(text: str) -> list[SendMessage]:
@@ -15,6 +15,9 @@ def controller(text: str) -> list[SendMessage]:
     url = f'https://dobujio.vercel.app/plot/{stock_no}?field=收盤價&start={start_date}&end={end_date}&interval={interval}'
     # 回覆訊息列表
     return [
+            TextSendMessage(
+                text=url
+            ),
             ImageSendMessage(
                     original_content_url=url,
                     preview_image_url=url
