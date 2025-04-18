@@ -18,7 +18,7 @@
 
 - **語言**：Python 3
 - **架構**：Flask + LINE Messaging API + Vercel
-- **資料來源**：台灣證券交易所（TWSE）公開 API
+- **資料來源**：[台灣證券交易所（TWSE）](https://www.twse.com.tw/)公開 API
 - **功能模組**：
   - `crawler/`：爬蟲模組，負責抓取即時與歷史股票資料
   - `api/`：LINE Bot 指令控制器與回應處理
