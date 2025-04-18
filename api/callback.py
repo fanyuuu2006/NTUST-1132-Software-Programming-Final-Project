@@ -1,4 +1,5 @@
 import io
+import json
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage
@@ -52,7 +53,7 @@ def plot():
     title = request.args.get('title')
     x_label = request.args.get('x_label')
     y_label = request.args.get('y_label')
-    data = request.args.get('data')
+    data = json.loads(request.args.get('data'))
     x_data = [d[0] for d in data]
     y_data = [d[1] for d in data]
 
