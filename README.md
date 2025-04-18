@@ -31,7 +31,7 @@
 
 使用 `/pricetrend 2330 20250101 20250419 day` 指令，系統將產生以下風格的折線圖（紅色表示上漲、綠色表示下跌）：
 
-![Trend Example](https://tinyurl.com/2yydvwwh)
+![Trend Example](https://tinyurl.com/24cl83no)
 
 ---
 
