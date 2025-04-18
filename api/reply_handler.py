@@ -109,7 +109,7 @@ def reply_handler(text: str) -> list[SendMessage]:
                     )),
                     TextSendMessage(
                         text=(
-                            f"你可以稍後再試，或回報問題給開發者 🙇"
+                            f"你可以稍後再試，或回報問題給開發者 🙇\n"
                             f"開發者的聯絡方式：\n"
                             f"https://www.instagram.com/fan._.yuuu/\n"
                             f"（請附上錯誤內容）"

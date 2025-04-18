@@ -36,7 +36,7 @@ def controller(text: str) -> list[SendMessage]:
             f"📈 收盤價走勢圖查詢\n"
             f"📌 股票代號：{stock_no}\n"
             f"📅 日期區間：{start_date} ~ {end_date}\n"
-            f"🔗 走勢圖連結：{utils.url.shorten_url(url)}\n\n"
+            f"🔗 走勢圖連結：{utils.url.shorten_url(url)}"
         )
     ),
     ImageSendMessage(
