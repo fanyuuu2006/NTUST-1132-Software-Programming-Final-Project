@@ -2,6 +2,8 @@ import json
 from linebot.models import SendMessage, TextSendMessage
 from typing import Callable, Literal
 
+from api.controllers import pricetrend
+
 from .controllers import name, test, price, daily
 
 
