@@ -4,7 +4,7 @@ from typing import Callable, Literal
 
 from api.controllers import pricetrend
 
-from .controllers import name, test, price, daily, kline
+from .controllers import name, test, price, daily, kline, volumebar
 
 
 FeatureHandler = Callable[[str], list[SendMessage]]
@@ -63,6 +63,11 @@ features: dict[str, dict[Literal["discription", "format", "controller"], str | F
         "discription": "獲取期間內指定股票之K線圖",
         "format": "/kline <股票代號> <起始日期?> <結束日期?>",
         "controller": kline.controller
+    },
+    "/volumebar": {
+        "discription": "獲取期間內指定股票之成交量長條圖",
+        "format": "/volumebar <股票代號> <起始日期?> <結束日期?> <間隔單位?>",
+        "controller": volumebar.controller
     },
 }
 
