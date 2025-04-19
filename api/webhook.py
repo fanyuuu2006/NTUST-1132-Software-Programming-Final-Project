@@ -8,7 +8,7 @@ import os
 from dotenv import load_dotenv
 
 import utils
-from visualize import trend, kline, bar
+from visualize import Chart
 from .reply_handler import reply_handler
 
 # 讀取 .env 環境變數
@@ -61,7 +61,7 @@ def plot():
             x_data = [d[0] for d in data]
             y_data = [d[1] for d in data]
 
-            img_data = trend(
+            img_data = Chart.trend(
                 title=title,
                 x_label=x_label,
                 y_label=y_label,
@@ -72,7 +72,7 @@ def plot():
             title = request.args.get('title')
             token = request.args.get('token')
             data = utils.data.decompress_data(token)
-            img_data = kline(
+            img_data = Chart.kline(
                 title=title,
                 data=data,
             )
@@ -84,7 +84,7 @@ def plot():
             data = utils.data.decompress_data(token)
             x_data = [d[0] for d in data]
             y_data = [d[1] for d in data]
-            img_data = bar(
+            img_data = Chart.bar(
                 title=title,
                 x_label=x_label,
                 y_label=y_label,
