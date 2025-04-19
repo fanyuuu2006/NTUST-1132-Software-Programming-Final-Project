@@ -22,8 +22,8 @@
 - **功能模組**：
   - `crawler/`：爬蟲模組，負責抓取即時與歷史股票資料
   - `api/`：LINE Bot 指令控制器與回應處理
-  - `visualize/`：使用 Matplotlib 繪製走勢圖
-  - `utils/`：輔助函式（日期轉換、網址縮短等）
+  - `visualize/`：使用 Matplotlib 繪製走勢式資料視覺化圖片模組
+  - `utils/`：輔助函式模組（日期轉換、網址縮短等）
 
 ---
 
