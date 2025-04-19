@@ -61,7 +61,7 @@ def trend(
 
     ax.set_xticks(range(len(x_data)))
     ax.set_xlim(-0.4, len(x_data) - 0.4)
-    ax.set_xticklabels(x_data, rotation=60, ha='right', fontproperties=font_prop)
+    ax.set_xticklabels(x_data, rotation=75, ha='right', fontproperties=font_prop)
 
     ax.set_title(title, fontproperties=font_prop, fontdict={"fontsize": 16}, pad=10)
     ax.set_xlabel(y_label, fontproperties=font_prop)
@@ -126,7 +126,7 @@ def kline(
 
     ax.set_xticks(x_indices)
     ax.set_xlim(-0.3, len(x_indices) - 0.3)
-    ax.set_xticklabels(x_labels, rotation=60, ha='right', fontproperties=font_prop)
+    ax.set_xticklabels(x_labels, rotation=75, ha='right', fontproperties=font_prop)
 
     ax.set_title(title,fontproperties=font_prop, fontdict={"fontsize": 16}, pad=10)
     ax.set_xlabel("日期", fontproperties=font_prop)
@@ -180,7 +180,7 @@ def bar(
 
     ax.set_xticks(x_indices)
     ax.set_xlim(-0.4, len(x_data) - 0.4)
-    ax.set_xticklabels(x_data, rotation=60, ha="right", fontproperties=font_prop)
+    ax.set_xticklabels(x_data, rotation=75, ha="right", fontproperties=font_prop)
 
     ax.set_title(title, fontproperties=font_prop, fontdict={"fontsize": 16}, pad=10)
     ax.set_xlabel(x_label, fontproperties=font_prop, fontsize=12)
