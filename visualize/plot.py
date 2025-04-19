@@ -107,7 +107,7 @@ def kline(
         high = item["high"]
         low = item["low"]
 
-        color = "red" if close >= open else "green"
+        color = "red" if close > open else "black" if close == open else "green"
 
         # 畫影線 （最高價到最低價）
         ax.plot([x_indices[i], x_indices[i]], [low, high], color=color)
