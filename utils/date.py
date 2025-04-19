@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional
 
 
@@ -16,7 +16,23 @@ def today(fmt="%Y%m%d") -> str:
     return td.strftime(fmt)  # 格式化日期字串
     
 
-
+def last_month(fmt="%Y%m%d") -> str:
+    """
+    取得上個月的日期字串，格式為 YYYYMMDD。
+    參數:
+        fmt (str): 輸出的日期格式（預設為 '%Y%m%d'）。
+    
+    回傳:
+        str: 上個月的日期字串。
+    """
+    today = datetime.today()
+    try:
+        return today.replace(month=today.month - 1).strftime(fmt)
+    except ValueError:
+        # 例：5月31 改 4月31 會錯 → 改成 4月30
+        last_month = today.replace(day=1) - timedelta(days=1)
+        return last_month.strftime(fmt)
+    
 
 def roc_to_ad(roc: str, output_format: str = "%Y%m%d") -> str:
     """

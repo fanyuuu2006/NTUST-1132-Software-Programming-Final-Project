@@ -97,31 +97,31 @@ def kline(
         return None
 
     x_labels = [item["date"] for item in data]
-    x = list(range(len(x_labels)))
+    x_indices = list(range(len(x_labels)))
 
-    fig, ax = plt.subplots(figsize=(max(8, len(data) * 0.3), 5))
+    fig, ax = plt.subplots(figsize=(max(8, len(data) * 0.1), 5))
 
     for i, item in enumerate(data):
-        open_ = item["open"]
+        open = item["open"]
         close = item["close"]
         high = item["high"]
         low = item["low"]
 
-        color = "red" if close >= open_ else "green"
+        color = "red" if close >= open else "green"
 
-        # 畫影線
-        ax.plot([x[i], x[i]], [low, high], color=color)
+        # 畫影線 （最高價到最低價）
+        ax.plot([x_indices[i], x_indices[i]], [low, high], color=color)
 
-        # 畫實體（開收之間的方塊）
-        rect_y = min(open_, close)
-        height = abs(open_ - close)
+        # 畫實體 （開盤價到收盤價）
+        rect_y = min(open, close)
+        height = abs(open - close)
         ax.add_patch(plt.Rectangle(
-            (x[i] - 0.3, rect_y), 0.6, height or 0.8,  # 如果漲跌幅是0，畫個小高度
+            (x_indices[i] - 0.3, rect_y), 0.6, height or 0.8,  # 如果漲跌幅是0，畫個小高度
             color=color
         ))
 
-    ax.set_xticks(x)
-    ax.set_xlim(-0.5, len(x) - 0.5)
+    ax.set_xticks(x_indices)
+    ax.set_xlim(-0.5, len(x_indices) - 0.5)
     ax.set_xticklabels(x_labels, rotation=60, ha='right', fontproperties=font_prop)
 
     ax.set_title(title, fontproperties=font_prop)

@@ -8,11 +8,11 @@ start_date = "20250101"
 end_date = "20250419"
 interval = "day"
 stock = TaiwanStockExchangeCrawler.no(stock_no, date_range=(start_date, end_date))
-stock_data = stock.daily_field_transform(
-    field="收盤價",
-    interval=interval,
-    date_range=(start_date, end_date),
-    )
+# stock_data = stock.daily_field_transform(
+#     field="收盤價",
+#     interval=interval,
+#     date_range=(start_date, end_date),
+#     )
 
 
 
@@ -22,6 +22,10 @@ stock_data = stock.daily_field_transform(
 #     f"&x_label={urllib.parse.quote('日期')}" \
 #     f"&y_label={urllib.parse.quote('收盤價')}" \
 #     f"&token={utils.data.compress_data(stock_data)}"
+
+stock_data = stock.kline(
+    date_range=(start_date, end_date),
+)
 
 url = f"https://dobujio.vercel.app/plot?"\
     f"type=kline" \

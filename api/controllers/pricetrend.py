@@ -9,7 +9,7 @@ def controller(text: str) -> list[SendMessage]:
     # 解析使用者輸入的文字，取得股票代號
     part = text.split(" ")
     stock_no = part[1]
-    start_date = part[2] if len(part) > 2 else utils.date.today()[:6]+"01"
+    start_date = part[2] if len(part) > 2 else utils.date.last_month()
     end_date = part[3] if len(part) > 3 else utils.date.today()
     interval = part[4] if len(part) > 4 else "day"
     
