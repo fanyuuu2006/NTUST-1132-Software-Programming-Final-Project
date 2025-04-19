@@ -63,12 +63,14 @@ def trend(
     ax.set_xlim(-0.4, len(x_data) - 0.4)
     ax.set_xticklabels(x_data, rotation=60, ha='right', fontproperties=font_prop)
 
-    ax.set_title(title, fontproperties=font_prop)
+    ax.set_title(title, fontproperties=font_prop, fontdict={"fontsize": 16}, pad=10)
     ax.set_xlabel(y_label, fontproperties=font_prop)
     ax.set_ylabel(x_label, fontproperties=font_prop)
     ax.grid(True)
 
-    fig.tight_layout()
+    fig.tight_layout(pad=1.5)
+    fig.text(0.99, 0.01, "資料來源：TWSE", ha='right', va='bottom',
+         fontsize=8, color='gray', fontproperties=font_prop, alpha=0.6)
 
     # 圖轉為 bytes
     buf = BytesIO()
@@ -124,12 +126,14 @@ def kline(
     ax.set_xlim(-0.3, len(x_indices) - 0.3)
     ax.set_xticklabels(x_labels, rotation=60, ha='right', fontproperties=font_prop)
 
-    ax.set_title(title, fontproperties=font_prop)
+    ax.set_title(title,fontproperties=font_prop, fontdict={"fontsize": 16}, pad=10)
     ax.set_xlabel("日期", fontproperties=font_prop)
     ax.set_ylabel("價格", fontproperties=font_prop)
     ax.grid(True)
 
-    fig.tight_layout()
+    fig.tight_layout(pad=1.5)
+    fig.text(0.99, 0.01, "資料來源：TWSE", ha='right', va='bottom',
+         fontsize=8, color='gray', fontproperties=font_prop, alpha=0.6)
 
     buf = BytesIO()
     fig.savefig(buf, format='jpeg')
