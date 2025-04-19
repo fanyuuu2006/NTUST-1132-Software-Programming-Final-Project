@@ -4,28 +4,23 @@ from crawler import TaiwanStockExchangeCrawler
 import utils
 def controller(text: str) -> list[SendMessage]:
     """
-    處理 /pricetrend 指令，獲取期間內收盤價趨勢圖
+    處理 /kline 指令，獲取期間內指定股票之K線圖
     """
     # 解析使用者輸入的文字，取得股票代號
     part = text.split(" ")
     stock_no = part[1]
     start_date = part[2] if len(part) > 2 else utils.date.last_month()
     end_date = part[3] if len(part) > 3 else utils.date.today()
-    interval = part[4] if len(part) > 4 else "day"
     
     stock = TaiwanStockExchangeCrawler.no(stock_no, date_range=(start_date, end_date))
-    stock_data = stock.daily_field_transform(
-        field="收盤價",
-        interval=interval,
+    stock_data = stock.kline(
         date_range=(start_date, end_date),
         )
     
 
     url = f"https://dobujio.vercel.app/plot?"\
-        f"type=trend" \
-        f"&title={urllib.parse.quote(stock_no + '-' + stock.get('股票簡稱')[0] + '-收盤價趨勢圖')}" \
-        f"&x_label={urllib.parse.quote('日期')}" \
-        f"&y_label={urllib.parse.quote('收盤價')}" \
+        f"type=kline" \
+        f"&title={urllib.parse.quote(stock_no + '-' + stock.get('股票簡稱')[0] + '-K線圖')}" \
         f"&token={utils.data.compress_data(stock_data)}"
         
     if len(url) > 2000:
@@ -34,10 +29,10 @@ def controller(text: str) -> list[SendMessage]:
     return [
     TextSendMessage(
         text=(
-            f"📈 指定股票收盤價趨勢圖查詢\n"
+            f"📈 指定股票K線圖查詢\n"
             f"📌 股票代號：{stock_no}\n"
             f"📅 日期區間：{start_date} ~ {end_date}\n"
-            f"🔗 趨勢圖連結：{utils.url.shorten_url(url)}"
+            f"🔗 K線圖連結：{utils.url.shorten_url(url)}"
         )
     ),
     ImageSendMessage(

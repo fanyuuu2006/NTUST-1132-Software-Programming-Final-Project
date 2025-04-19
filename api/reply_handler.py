@@ -4,7 +4,7 @@ from typing import Callable, Literal
 
 from api.controllers import pricetrend
 
-from .controllers import name, test, price, daily
+from .controllers import name, test, price, daily, kline
 
 
 FeatureHandler = Callable[[str], list[SendMessage]]
@@ -55,9 +55,14 @@ features: dict[str, dict[Literal["discription", "format", "controller"], str | F
         "controller": daily.controller
     },
     "/pricetrend": {
-        "discription": "獲取期間內收盤價走勢圖",
+        "discription": "獲取期間內指定股票之收盤價趨勢圖",
         "format": "/pricetrend <股票代號> <起始日期?> <結束日期?> <間隔單位?>",
         "controller": pricetrend.controller
+    },
+    "/kline": {
+        "discription": "獲取期間內指定股票之K線圖",
+        "format": "/kline <股票代號> <起始日期?> <結束日期?>",
+        "controller": kline.controller
     },
 }
 
