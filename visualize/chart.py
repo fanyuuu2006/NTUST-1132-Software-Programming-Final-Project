@@ -146,7 +146,7 @@ class Chart:
             ax.add_patch(plt.Rectangle(
                 xy=(x_indices[i] - 0.3, rect_y),
                 width=0.6,
-                height=height or 0.2,  # 如果漲跌幅是0，畫個小高度
+                height=height or 0.1,  # 如果漲跌幅是0，畫個小高度
                 color=color
             ))
 
