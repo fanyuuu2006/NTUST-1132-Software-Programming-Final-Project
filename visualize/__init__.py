@@ -1,2 +1,2 @@
-from .plot import trend, kline
-__all__ = ["trend", "kline"]
+from .plot import trend, kline, bar
+__all__ = ["trend", "kline", "bar"]

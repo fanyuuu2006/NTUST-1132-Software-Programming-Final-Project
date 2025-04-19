@@ -8,7 +8,7 @@ import os
 from dotenv import load_dotenv
 
 import utils
-from visualize import trend, kline
+from visualize import trend, kline, bar
 from .reply_handler import reply_handler
 
 # 讀取 .env 環境變數
@@ -75,6 +75,21 @@ def plot():
             img_data = kline(
                 title=title,
                 data=data,
+            )
+        case "bar":
+            title = request.args.get('title')
+            x_label = request.args.get('x_label')
+            y_label = request.args.get('y_label')
+            token = request.args.get('token')
+            data = utils.data.decompress_data(token)
+            x_data = [d[0] for d in data]
+            y_data = [d[1] for d in data]
+            img_data = bar(
+                title=title,
+                x_label=x_label,
+                y_label=y_label,
+                x_data=x_data,
+                y_data=y_data,
             )
         case _:
             return "不支援的圖表類型", 400

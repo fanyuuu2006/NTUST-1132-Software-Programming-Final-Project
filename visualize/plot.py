@@ -1,5 +1,5 @@
 from io import BytesIO
-from typing import Optional
+from typing import Literal, Optional
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
@@ -83,7 +83,7 @@ def trend(
 
 def kline(
     title: str,
-    data: list[dict]
+    data: list[dict[Literal["open","high","low","close","date"],str|float|int]],
 ) -> Optional[bytes]:
     """
     根據提供的資料繪製 K 線圖，並輸出為 JPEG 圖片的位元資料。
@@ -118,7 +118,9 @@ def kline(
         rect_y = min(open, close)
         height = abs(open - close)
         ax.add_patch(plt.Rectangle(
-            (x_indices[i] - 0.3, rect_y), 0.6, height or 0.8,  # 如果漲跌幅是0，畫個小高度
+            xy=(x_indices[i] - 0.3, rect_y),
+            width=0.6,
+            height=height or 0.8,  # 如果漲跌幅是0，畫個小高度
             color=color
         ))
 
@@ -137,6 +139,63 @@ def kline(
 
     buf = BytesIO()
     fig.savefig(buf, format='jpeg')
+    plt.close(fig)
+    buf.seek(0)
+    return buf.read()
+
+
+def bar(
+    title: str,
+    x_label: str,
+    y_label: str,
+    x_data: list[str],
+    y_data: list[float | int],
+) -> Optional[bytes]:
+    """
+    根據提供的資料繪製長條圖（Bar Chart），輸出為 JPEG 圖片的位元資料。
+
+    參數:
+        title (str): 圖表標題。
+        x_label (str): X 軸標籤。
+        y_label (str): Y 軸標籤。
+        x_data (list[str]): 橫軸資料（通常為日期）。
+        y_data (list[float | int]): 對應的數值資料（例如成交量）。
+
+    回傳:
+        Optional[bytes]: 圖片的位元資料（JPEG 格式），若資料無效則回傳 None。
+    """
+    if not x_data or not y_data or len(x_data) != len(y_data):
+        return None
+
+    x_indices = list(range(len(x_data)))
+
+    fig, ax = plt.subplots(figsize=(max(8, len(x_data) * 0.3), 4))
+
+    ax.bar(
+        x_indices,
+        y_data,
+        color="blue",
+        width=0.6,
+    )
+
+    ax.set_xticks(x_indices)
+    ax.set_xticklabels(x_data, rotation=60, ha="right", fontproperties=font_prop)
+
+    ax.set_title(title, fontproperties=font_prop, fontdict={"fontsize": 16}, pad=10)
+    ax.set_xlabel(x_label, fontproperties=font_prop, fontsize=12)
+    ax.set_ylabel(y_label, fontproperties=font_prop, fontsize=12)
+    ax.grid(True, axis='y', linestyle='--', alpha=0.4)
+
+    fig.tight_layout(pad=1.5)
+    fig.text(
+        0.99, 0.01, "資料來源：TWSE",
+        ha="right", va="bottom",
+        fontsize=8, color="gray",
+        fontproperties=font_prop, alpha=0.6
+    )
+
+    buf = BytesIO()
+    fig.savefig(buf, format="jpeg")
     plt.close(fig)
     buf.seek(0)
     return buf.read()
