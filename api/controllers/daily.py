@@ -28,7 +28,7 @@ def controller(text: str) -> list[SendMessage]:
     group_text = ""
     for i, day_data in enumerate(daily_data):
         group_text += (
-            f"📅 日期：{utils.date.datetime.strptime(day_data['日期'], "%Y/%m/%d")}\n"
+            f"📅 日期：{utils.date.datetime.strptime(day_data['日期'], "%Y%m%d").strftime("%Y/%m/%d")}\n"
             f"📈 開盤：{day_data['開盤價']} 元\n"
             f"🔼 最高：{day_data['最高價']} 元\n"
             f"🔽 最低：{day_data['最低價']} 元\n"
