@@ -60,7 +60,7 @@ def trend(
 
 
     ax.set_xticks(range(len(x_data)))
-    ax.set_xlim(-0.5, len(x_data) - 0.5)
+    ax.set_xlim(-0.4, len(x_data) - 0.4)
     ax.set_xticklabels(x_data, rotation=60, ha='right', fontproperties=font_prop)
 
     ax.set_title(title, fontproperties=font_prop)
@@ -99,7 +99,7 @@ def kline(
     x_labels = [item["date"] for item in data]
     x_indices = list(range(len(x_labels)))
 
-    fig, ax = plt.subplots(figsize=(max(8, len(data) * 0.1), 5))
+    fig, ax = plt.subplots(figsize=(max(8, len(data) * 0.3), 5))
 
     for i, item in enumerate(data):
         open = item["open"]
@@ -121,7 +121,7 @@ def kline(
         ))
 
     ax.set_xticks(x_indices)
-    ax.set_xlim(-0.5, len(x_indices) - 0.5)
+    ax.set_xlim(-0.3, len(x_indices) - 0.3)
     ax.set_xticklabels(x_labels, rotation=60, ha='right', fontproperties=font_prop)
 
     ax.set_title(title, fontproperties=font_prop)

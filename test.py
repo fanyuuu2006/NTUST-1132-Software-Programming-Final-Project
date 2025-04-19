@@ -29,7 +29,7 @@ stock_data = stock.kline(
 
 url = f"https://dobujio.vercel.app/plot?"\
     f"type=kline" \
-    f"&title={urllib.parse.quote(stock_no + '-' + stock.get('股票簡稱')[0] + '-收盤價趨勢圖')}" \
+    f"&title={urllib.parse.quote(stock_no + '-' + stock.get('股票簡稱')[0] + '-股價K線圖')}" \
     f"&token={utils.data.compress_data(stock_data)}"
 
 
