@@ -29,9 +29,9 @@
 
 ## 📊 成果示例
 
-使用 `/kline 2330 20250101 20250419` 指令，系統將產生以下風格的K線圖（紅色表示上漲、綠色表示下跌、黑色則不變）：
+使用 `/kline 2330` 指令，系統將產生以下風格的K線圖（紅色表示上漲、綠色表示下跌、黑色則不變）：
 
-![K Line Example](https://tinyurl.com/29lwhh8n)
+![K Line Example](https://tinyurl.com/292dmqj4)
 
 ---
 

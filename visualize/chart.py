@@ -46,6 +46,7 @@ class Chart:
         plt.close(fig)
         buf.seek(0)
         return buf.read()
+    
     @classmethod     
     def trend(
         cls,
