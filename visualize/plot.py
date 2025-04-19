@@ -179,6 +179,7 @@ def bar(
     )
 
     ax.set_xticks(x_indices)
+    ax.set_xlim(-0.4, len(x_data) - 0.4)
     ax.set_xticklabels(x_data, rotation=60, ha="right", fontproperties=font_prop)
 
     ax.set_title(title, fontproperties=font_prop, fontdict={"fontsize": 16}, pad=10)
