@@ -26,7 +26,6 @@ class TaiwanStockExchangeCrawler:
         "個股每日平均股價、成交量等",
         "融資融券與借券成交明細",
         "法人持股統計",
-        
     ]
     REPORTS: dict[REPORTS_KEYS, str] = {
         "每日收盤行情": "MI_INDEX",
