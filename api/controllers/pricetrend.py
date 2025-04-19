@@ -27,7 +27,7 @@ def controller(text: str) -> list[SendMessage]:
         f"&token={utils.data.compress_data(stock_data)}"
         
     if len(url) > 2000:
-        raise ValueError("❗資料量過大，超過圖表產生限制，請縮短日期區間再試一次 🙏")
+        raise ValueError("❗資料量過大，超過圖表產生限制，請縮短日期範圍或區間方式再試一次 🙏")
         
     return [
     TextSendMessage(
