@@ -38,8 +38,8 @@ def trend(
     # 畫圖
     fig, ax = plt.subplots(figsize=(max(8, len(x_data) * 0.3), 5))
     # 建立漲跌分組
-    up_segments = []
-    down_segments = []
+    up_segments: list[tuple[list[float|int]]] = []
+    down_segments: list[tuple[list[float|int]]] = []
 
     x_indices = list(range(len(x_data))) # 讓 matplotlib 使用數字索引來表示 x 軸的位置
 
@@ -60,6 +60,7 @@ def trend(
 
 
     ax.set_xticks(range(len(x_data)))
+    ax.set_xlim(-0.5, len(x_data) - 0.5)
     ax.set_xticklabels(x_data, rotation=60, ha='right', fontproperties=font_prop)
 
     ax.set_title(title, fontproperties=font_prop)
