@@ -126,6 +126,8 @@ class TaiwanStockExchangeCrawler:
                 date_index = data["fields"].index("日期")
             except ValueError:
                 date_index = None  # 若沒有日期欄位就略過轉換
+            except KeyError:
+                raise RuntimeError("無法取得資料", data)
 
             if date_index is not None:
                 for row in data.get("data", []):
