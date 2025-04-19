@@ -79,3 +79,60 @@ def trend(
 
 
 
+def kline(
+    title: str,
+    data: list[dict]
+) -> Optional[bytes]:
+    """
+    根據提供的資料繪製 K 線圖，並輸出為 JPEG 圖片的位元資料。
+
+    參數:
+        title (str): 圖表標題。
+        data (list[dict]): 每筆資料需包含 open/high/low/close/date (開/高/低/收/日期) 的欄位。
+
+    回傳:
+        Optional[bytes]: 圖片的位元資料（JPEG 格式），可供儲存或回傳至前端。若資料無效則回傳 None。
+    """
+    if not data:
+        return None
+
+    x_labels = [item["date"] for item in data]
+    x = list(range(len(x_labels)))
+
+    fig, ax = plt.subplots(figsize=(max(8, len(data) * 0.3), 5))
+
+    for i, item in enumerate(data):
+        open_ = item["open"]
+        close = item["close"]
+        high = item["high"]
+        low = item["low"]
+
+        color = "red" if close >= open_ else "green"
+
+        # 畫影線
+        ax.plot([x[i], x[i]], [low, high], color=color)
+
+        # 畫實體（開收之間的方塊）
+        rect_y = min(open_, close)
+        height = abs(open_ - close)
+        ax.add_patch(plt.Rectangle(
+            (x[i] - 0.3, rect_y), 0.6, height or 0.8,  # 如果漲跌幅是0，畫個小高度
+            color=color
+        ))
+
+    ax.set_xticks(x)
+    ax.set_xlim(-0.5, len(x) - 0.5)
+    ax.set_xticklabels(x_labels, rotation=60, ha='right', fontproperties=font_prop)
+
+    ax.set_title(title, fontproperties=font_prop)
+    ax.set_xlabel("日期", fontproperties=font_prop)
+    ax.set_ylabel("價格", fontproperties=font_prop)
+    ax.grid(True)
+
+    fig.tight_layout()
+
+    buf = BytesIO()
+    fig.savefig(buf, format='jpeg')
+    plt.close(fig)
+    buf.seek(0)
+    return buf.read()

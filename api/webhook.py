@@ -8,7 +8,7 @@ import os
 from dotenv import load_dotenv
 
 import utils
-from visualize import trend
+from visualize import trend, kline
 from .reply_handler import reply_handler
 
 # 讀取 .env 環境變數
@@ -50,22 +50,35 @@ def handle_text_message(event: MessageEvent):
 @app.route('/plot', methods=['GET'])
 def plot():
     # 取得查詢參數
-    title = request.args.get('title')
-    x_label = request.args.get('x_label')
-    y_label = request.args.get('y_label')
-    token = request.args.get('token')
-    data = utils.data.decompress_data(token)
-    x_data = [d[0] for d in data]
-    y_data = [d[1] for d in data]
+    type = request.args.get('type')
+    match type:
+        case "trend":
+            title = request.args.get('title')
+            x_label = request.args.get('x_label')
+            y_label = request.args.get('y_label')
+            token = request.args.get('token')
+            data = utils.data.decompress_data(token)
+            x_data = [d[0] for d in data]
+            y_data = [d[1] for d in data]
 
-    img_data = trend(
-        title=title,
-        x_label=x_label,
-        y_label=y_label,
-        x_data=x_data,
-        y_data=y_data,
-    )
-
+            img_data = trend(
+                title=title,
+                x_label=x_label,
+                y_label=y_label,
+                x_data=x_data,
+                y_data=y_data,
+            )
+        case "kline":
+            title = request.args.get('title')
+            token = request.args.get('token')
+            data = utils.data.decompress_data(token)
+            img_data = kline(
+                title=title,
+                data=data,
+            )
+        case _:
+            return "不支援的圖表類型", 400
+    
     if img_data is None:
         return "資料不足，無法繪圖", 400
 

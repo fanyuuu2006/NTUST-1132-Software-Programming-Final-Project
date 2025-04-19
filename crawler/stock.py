@@ -119,4 +119,40 @@ class Stock:
             return [[yyyymm, sum(values) / len(values)] for yyyymm, values in monthly_data.items()]
         else:
             return sorted_data
+        
+    def kline(
+        self,
+        date_range: Optional[tuple[str, str]] = None,
+    ) -> Optional[list[dict[str, str| float]]]:
+        """
+        擷取每日交易資料中的 K 線圖所需欄位資料（開、高、低、收），並轉為 float。
+
+        參數:
+            date_range (Optional[tuple[str, str]]): 起始與結束日期，格式為 YYYYMMDD。
+
+        回傳:
+            Optional[list[dict[str, float]]]: 每筆資料包含 date/open/high/low/close。若無有效資料則回傳 None。
+        """
+        raw_data: list[dict[DAILY_DATA_KEYS, str]] = self.get("每日交易資料", date_range=date_range)[0]
+        result: list[dict[str, float]] = []
+
+        for entry in raw_data:
+            try:
+                result.append({
+                    "date": entry["日期"],
+                    "open": float(entry["開盤價"].replace(",", "")),
+                    "high": float(entry["最高價"].replace(",", "")),
+                    "low": float(entry["最低價"].replace(",", "")),
+                    "close": float(entry["收盤價"].replace(",", "")),
+                })
+            except (ValueError, KeyError, TypeError):
+                continue  # 忽略資料格式錯誤的筆數
+
+        if not result:
+            return None
+
+        # 按照日期排序
+        result.sort(key=lambda x: x["date"])
+
+        return result
 
