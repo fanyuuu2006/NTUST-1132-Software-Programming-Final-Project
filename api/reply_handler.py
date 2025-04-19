@@ -76,10 +76,10 @@ def reply_handler(text: str) -> list[SendMessage]:
     根據傳入的文字，取得對應的 LINE 回覆訊息。
     """
     try:
-        cmd = text.split(' ')[0]
+        cmd = text.split(' ')[0].lower()
         if cmd == "/":
             return [TextSendMessage(text="/ 與 指令之間可沒有空格喔🤌")]
-        if cmd.lower() not in features:
+        if cmd not in features:
             # 若無匹配功能，則從 dialoglib.json 查找回覆
             with open("json/dialoglib.json", "r", encoding="utf-8") as f:
                 dialoglib: dict = json.load(f)
