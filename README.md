@@ -33,7 +33,7 @@
 
 使用 `/kline 2330` 指令，系統將產生以下風格的K線圖（紅色表示上漲、綠色表示下跌、黑色則不變）：
 
-![K Line Example](https://tinyurl.com/25susept)
+![K Line Example](https://tinyurl.com/237fe9wf)
 
 ---
 
