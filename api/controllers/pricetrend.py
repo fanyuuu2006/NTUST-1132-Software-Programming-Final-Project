@@ -13,14 +13,16 @@ def controller(text: str) -> list[SendMessage]:
     end_date = part[3] if len(part) > 3 else utils.date.today()
     interval = part[4] if len(part) > 4 else "day"
     
-    stock = TaiwanStockExchangeCrawler.no(stock_no, date_range=(start_date, end_date))
+    stock = TaiwanStockExchangeCrawler.no(stock_no, date_range=(start_date, end_date), only_fetch=["real_time", "daily" if interval == "day" else "month_avg"])
     stock_data = stock.daily_field_transform(
         field="收盤價",
         interval=interval,
         date_range=(start_date, end_date),
         )
     
-
+    if not stock_data:
+        return [TextSendMessage(text="⚠️ 該期間內查無收盤價資料\n請確認日期或改用其他區間")]
+    
     url = f"https://dobujio.vercel.app/plot?"\
         f"type=trend" \
         f"&title={urllib.parse.quote(stock_no + '-' + stock.get('股票簡稱')[0] + '-收盤價趨勢圖')}" \
