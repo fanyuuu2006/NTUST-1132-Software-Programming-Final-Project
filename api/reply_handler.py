@@ -127,8 +127,13 @@ def reply_handler(text: str) -> list[SendMessage]:
                 messages = feature["controller"](text)
                 if len(messages) > 5:
                     return messages[:4] + [
-                        TextSendMessage(text="不好意思🙇\n我一次最多只能回覆 5 則訊息喔！\n請您分段或精簡查詢內容🥹")
-                        ]
+                        TextSendMessage(text=(
+                            f"不好意思🙇\n"\
+                            f"我一次最多只能回覆 5 則訊息喔！\n"\
+                            f"部分訊息已被截斷了！\n"\
+                            f"請您分段或精簡查詢內容🥹"
+                            )
+                        )]
                 return messages
 
             except IndexError:
