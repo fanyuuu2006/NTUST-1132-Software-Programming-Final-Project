@@ -9,7 +9,7 @@ def controller(text: str) -> list[SendMessage]:
     part = text.split(" ")
     stock_no = part[1]
     
-    stock = TaiwanStockExchangeCrawler.no(stock_no)
+    stock = TaiwanStockExchangeCrawler.no(stock_no, only_fetch=["real_time"])
 
     # 查詢股票名稱
     stock_full_name = stock.get("股票全名")[0]

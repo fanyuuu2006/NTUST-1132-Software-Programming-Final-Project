@@ -10,7 +10,7 @@ def controller(text: str) -> list[SendMessage]:
     stock_no = part[1]
 
     # 查詢即時價格
-    stock_price = TaiwanStockExchangeCrawler.no(stock_no).get("目前成交價")[0]
+    stock_price = TaiwanStockExchangeCrawler.no(stock_no, only_fetch=["real_time"]).get("目前成交價")[0]
 
     # 回覆訊息列表
     return [

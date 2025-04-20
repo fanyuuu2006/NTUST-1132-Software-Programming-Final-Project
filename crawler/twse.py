@@ -39,7 +39,7 @@ class TaiwanStockExchangeCrawler:
     def __init__(self): ...
 
     @classmethod
-    def fetch(cls, url: str, params: dict) -> dict:
+    def fetch(cls, url: str, params: Optional[dict]=None) -> dict:
         headers = {
             'User-Agent': 'Mozilla/5.0',
             "Referer": "https://www.twse.com.tw/",
@@ -134,13 +134,7 @@ class TaiwanStockExchangeCrawler:
                         
             case "STOCK_DAY_AVG":...
             case "MI_INDEX":
-                today = utils.date.today()
-                params = {
-                    "response": response_format,
-                    "date": today,
-                    "type": "ALL"
-                }
-                result = cls.fetch(f"{cls.URLS["交易報表"]}/{report_code}", params)
+                result = cls.fetch(f"{cls.URLS["交易報表"]}/{report_code}")
                 
             case _:
                 raise RuntimeError(f"不應該運行至這段：{report_code}")
