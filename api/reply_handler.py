@@ -101,16 +101,16 @@ def reply_handler(text: str) -> list[SendMessage]:
         if cmd not in features:
             if cmd.startswith("/"):
                 candidates = [c for c in features if c.startswith(cmd)] 
-            if len(candidates) > 0:
-                return [TextSendMessage(
-                    text="🧠 你是不是想打這些指令❓",
-                    quick_reply=QuickReply(
-                        items=[
-                            QuickReplyButton(action=MessageAction(label=c, text=c))
-                            for c in candidates[:5]
-                        ]
-                    )
-                )]
+                if len(candidates) > 0:
+                    return [TextSendMessage(
+                        text="🧠 你是不是想打這些指令❓",
+                        quick_reply=QuickReply(
+                            items=[
+                                QuickReplyButton(action=MessageAction(label=c, text=c))
+                                for c in candidates[:5]
+                            ]
+                        )
+                    )]
             
             # 若無匹配功能，則從 dialoglib.json 查找回覆
             with open("json/dialoglib.json", "r", encoding="utf-8") as f:
