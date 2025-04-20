@@ -30,7 +30,7 @@ stock = TaiwanStockExchangeCrawler.no(stock_no)
 #     f"&token={utils.data.compress_data(stock_data)}"
 
 stock_data = stock.kline(
-    date_range=(start_date, end_date),
+    # date_range=(start_date, end_date),
 )
 
 url = f"https://dobujio.vercel.app/plot?"\

@@ -104,11 +104,12 @@ def month_range(start: str, end: str) -> list[str]:
 
 def check_date_range(date_range: tuple[Optional[str], Optional[str]]) -> tuple[str, str]:
     td = today()
+    lm = last_month()
     if date_range is None:
-        return (td, td)
+        return (lm, td)
 
     start, end = date_range
-    start = start or td
+    start = start or lm
     end = end or td
 
     if start > end:
