@@ -1,5 +1,7 @@
 # 📈 玩股票都不揪 - LINE 股票查詢小幫手
 
+![GitHub Created At](https://img.shields.io/github/created-at/fanyuuu2006/NTUST-1132-Software-Programming-Final-Project)![GitHub Last Commit](https://img.shields.io/github/last-commit/fanyuuu2006/NTUST-1132-Software-Programming-Final-Project)
+
 ## 🧠 專案介紹
 
 本專案為 113 學年度 第 2 學期 資訊管理系「程式設計」課程期末專題，旨在打造一個結合 **LINE Bot** 、 **股市資料爬蟲** 與 **視覺化資料** 的互動式系統，讓使用者能夠在 LINE 上透過指令即時查詢台灣股票資訊，包括即時股價、每日交易資訊、股票名稱、收盤價趨勢圖與K線圖等。
@@ -16,13 +18,13 @@
 
 ### 🔧 技術與模組
 
-- **語言**：Python 3
+- **語言**：Python 3.12
 - **架構**：Flask + LINE Messaging API + Vercel
 - **資料來源**：[台灣證券交易所（TWSE）](https://www.twse.com.tw/)公開 API
 - **功能模組**：
   - `crawler/`：爬蟲模組，負責抓取即時與歷史股票資料
   - `api/`：LINE Bot 指令控制器與回應處理
-  - `visualize/`：使用 Matplotlib 繪製走勢式資料視覺化圖片模組
+  - `visualize/`：使用 Matplotlib 繪製資料視覺化圖片模組
   - `utils/`：輔助函式模組（日期轉換、網址縮短等）
 
 ---
