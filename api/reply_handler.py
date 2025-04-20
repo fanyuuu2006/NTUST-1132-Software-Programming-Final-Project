@@ -4,7 +4,7 @@ from typing import Callable, Literal
 
 from api.controllers import pricetrend
 
-from .controllers import name, test, price, daily, kline, volumebar
+from .controllers import name, price, daily, kline, volumebar
 
 
 FeatureHandler = Callable[[str], list[SendMessage]]
@@ -36,7 +36,20 @@ features: dict[str, dict[Literal["description", "format", "controller"], str | F
     "/test": {
         "description": "測試用指令",
         "format": "/test",
-        "controller": test.controller
+        "controller": lambda _: [
+            TextSendMessage(
+                text="🧪 測試成功！\n測試都不揪喔❓😎"
+            )
+        ]
+    },
+    "/echo": {
+    "discription": "回傳你輸入的訊息內容（測試用）",
+    "format": "/echo <訊息>",
+    "controller": lambda text: [
+        TextSendMessage(
+            text="你說的是：" + text.partition(" ")[2]
+            )
+        ]
     },
     "/name": {
         "description": "查詢股票名稱",
@@ -80,6 +93,13 @@ def reply_handler(text: str) -> list[SendMessage]:
         if cmd == "/":
             return [TextSendMessage(text="/ 與 指令之間可沒有空格喔🤌")]
         if cmd not in features:
+            if cmd.startswith("/"):
+                candidates = [c for c in features if c.startswith(cmd)] 
+            if len(candidates) > 0:
+                return [TextSendMessage(
+                    text="🧠 你是不是想打這些指令❓\n" + "\n\n".join(candidates)
+                )]
+            
             # 若無匹配功能，則從 dialoglib.json 查找回覆
             with open("json/dialoglib.json", "r", encoding="utf-8") as f:
                 dialoglib: dict = json.load(f)
