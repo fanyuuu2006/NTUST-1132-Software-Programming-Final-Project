@@ -126,9 +126,8 @@ def reply_handler(text: str) -> list[SendMessage]:
             try:
                 messages = feature["controller"](text)
                 if len(messages) > 5:
-                    return [
-                        TextSendMessage(text="🙇 不好意思，要回覆太多訊息啦🤒"),
-                        TextSendMessage(text="我一次最多只能回覆 5 則訊息喔！\n請您分段或精簡查詢內容🥹")
+                    return messages[:4] + [
+                        TextSendMessage(text="不好意思🙇\n我一次最多只能回覆 5 則訊息喔！\n請您分段或精簡查詢內容🥹")
                         ]
                 return messages
 

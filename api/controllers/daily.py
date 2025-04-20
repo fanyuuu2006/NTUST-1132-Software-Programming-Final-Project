@@ -11,7 +11,7 @@ def controller(text: str) -> list[SendMessage]:
     parts = text.strip().split()
 
     stock_no = parts[1]
-    start_date = parts[2] if len(parts) > 2 else utils.date.today()
+    start_date = parts[2] if len(parts) > 2 else utils.date.last_month()
     end_date = parts[3] if len(parts) > 3 else utils.date.today()
 
     # 查詢每日資料
@@ -40,7 +40,7 @@ def controller(text: str) -> list[SendMessage]:
             "———————————————\n\n"
         )
         
-        if i % 5 == 0 or i == len(daily_data):
+        if (i!= 0 and i % 6 == 0) or i == len(daily_data):
             result.append(TextSendMessage(text=group_text))
             group_text = ""
 
