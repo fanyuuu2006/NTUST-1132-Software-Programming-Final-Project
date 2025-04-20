@@ -1,6 +1,6 @@
 # 📈 玩股票都不揪 - LINE 股票查詢小幫手
 
-![GitHub Created At](https://img.shields.io/github/created-at/fanyuuu2006/NTUST-1132-Software-Programming-Final-Project)![GitHub Last Commit](https://img.shields.io/github/last-commit/fanyuuu2006/NTUST-1132-Software-Programming-Final-Project)
+![GitHub Created At](https://img.shields.io/github/created-at/fanyuuu2006/NTUST-1132-Software-Programming-Final-Project) ![GitHub Last Commit](https://img.shields.io/github/last-commit/fanyuuu2006/NTUST-1132-Software-Programming-Final-Project)
 
 ## 🧠 專案介紹
 
