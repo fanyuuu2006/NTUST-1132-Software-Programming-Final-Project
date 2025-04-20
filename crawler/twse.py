@@ -4,7 +4,7 @@ from typing import Literal, Optional
 
 import utils
 from .stock import Stock
-from .models import DAILY_DATA_JSON, REAL_TIME_JSON, DAILY_DATA, REAL_TIME
+from .models import DAILY_DATA_JSON, MONTH_AVG, MONTH_AVG_JSON, REAL_TIME_JSON, DAILY_DATA, REAL_TIME
 
 class TaiwanStockExchangeCrawler:
     """
@@ -23,7 +23,7 @@ class TaiwanStockExchangeCrawler:
         "每日收盤行情",
         "三大法人買賣超",
         "個股每日歷史交易資料",
-        "個股每日平均股價、成交量等",
+        "個股每日股價與月平均",
         "融資融券與借券成交明細",
         "法人持股統計",
     ]
@@ -31,7 +31,7 @@ class TaiwanStockExchangeCrawler:
         "每日收盤行情": "MI_INDEX",
         "三大法人買賣超": "T86",
         "個股每日歷史交易資料": "STOCK_DAY",
-        "個股每日平均股價、成交量等": "STOCK_DAY_AVG",
+        "個股每日股價與月平均": "STOCK_DAY_AVG",
         "融資融券與借券成交明細": "MI_MARGN", 
         "法人持股統計": "MI_INDEX20",             
     }
@@ -48,7 +48,7 @@ class TaiwanStockExchangeCrawler:
         
         try:
             response = requests.get(url, params=params, headers=headers, timeout=10) # vercel 部屬的api TimeOut 10s 
-            data: DAILY_DATA_JSON | REAL_TIME_JSON= response.json()
+            data = response.json()
         except ValueError:
             raise RuntimeError(f"無法解析 JSON：{response.text}")
         except requests.exceptions.Timeout:
@@ -74,7 +74,7 @@ class TaiwanStockExchangeCrawler:
         date_range: Optional[tuple[Optional[str], Optional[str]]] = None,
         stock_no: Optional[str] = None,
         response_format: str = "json"
-    ) -> DAILY_DATA:
+    ) -> DAILY_DATA | MONTH_AVG:
         """
         向台灣證券交易所（TWSE）抓取指定報表的原始資料。
 
@@ -132,7 +132,25 @@ class TaiwanStockExchangeCrawler:
                     else:
                         result["data"].extend(data.get("data", []))  # 合併每月資料
                         
-            case "STOCK_DAY_AVG":...
+            case "STOCK_DAY_AVG":
+                date_range = utils.date.check_date_range(date_range)
+                start_time = time.time()
+                
+                for date in utils.date.month_range(*date_range):
+                    # 檢查是否超過9秒
+                    if time.time() - start_time > 9:
+                        raise RuntimeError("請求時間過長，請減少查詢範圍")
+                    
+                    params: dict[str, str] = {
+                        "response": response_format,
+                        "date": date,
+                        "stockNo": stock_no
+                    }
+                        
+                    data: MONTH_AVG_JSON = cls.fetch(f"{cls.URLS["交易報表"]}/{report_code}", params)
+                    
+                    result[date[:6]] = data["data"][-1][1]
+                    
             case "MI_INDEX":
                 result = cls.fetch(f"{cls.URLS["交易報表"]}/{report_code}")
                 
@@ -227,7 +245,7 @@ class TaiwanStockExchangeCrawler:
         return cls.fetch(cls.URLS["即時資訊"], {"ex_ch": f"tse_{stock_no}.tw"})["msgArray"][0]
     
     @classmethod
-    def no(cls, stock_no: str,  date_range: Optional[tuple[str, str]] = None, only_fetch: Optional[list[Literal["daily", "real_time"]]] = None) -> Stock:
+    def no(cls, stock_no: str,  date_range: Optional[tuple[str, str]] = None, only_fetch: Optional[list[Literal["daily", "real_time", "month_avg"]]] = None) -> Stock:
         """
         取得指定股票代號的每日歷史交易資料
 
@@ -246,6 +264,7 @@ class TaiwanStockExchangeCrawler:
         
         stock.set_data(
             daily_data= cls.report("個股每日歷史交易資料", date_range, stock_no) if not only_fetch or "daily" in only_fetch else None,
-            real_time_data=cls.real_time(stock_no) if not only_fetch or "real_time" in only_fetch else None
+            real_time_data=cls.real_time(stock_no) if not only_fetch or "real_time" in only_fetch else None,
+            month_avg_data = cls.report("個股每日股價與月平均", date_range, stock_no) if not only_fetch or "month_avg" in only_fetch else None
         )
         return stock

@@ -20,13 +20,22 @@ class DAILY_DATA_JSON(TypedDict):
     data: list[list[str]]
     notes: list[str]
     total: int
-    
+        
 class DAILY_DATA(TypedDict):
     fields: list[DAILY_DATA_KEYS]
     data: list[list[str]]
 
+class MONTH_AVG_JSON(TypedDict):
+    stat: Literal["OK"] | str
+    date: str  # 格式: "20250401"
+    title: str
+    fields: list[DAILY_DATA_KEYS]
+    data: list[list[str]]
+    notes: list[str]
+    hints: str
 
-
+MONTH_AVG = dict[str, str]
+    
 REAL_TIME_FIELDS = Literal[
     "@", "tv", "ps", "pid", "pz", "bp", "fv", "oa", "ob", "m%",
     "^", "key", "a", "b", "c", "#", "d", "%", "ch", "tlong",

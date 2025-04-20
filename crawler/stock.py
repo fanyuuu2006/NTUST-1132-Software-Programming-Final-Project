@@ -1,10 +1,11 @@
 from typing import Literal, Optional, Union
 
-from .models import DAILY_DATA, DAILY_DATA_JSON, DAILY_DATA_KEYS, REAL_TIME,  REAL_TIME_JSON, REAL_TIME_KEYS, real_time_fields
+from .models import DAILY_DATA, DAILY_DATA_KEYS, MONTH_AVG, REAL_TIME, REAL_TIME_KEYS, real_time_fields
 
 class Stock:
     """股票"""
-    KEYS = Union[REAL_TIME_KEYS, Literal["每日交易資料"]]
+    KEYS = Union[REAL_TIME_KEYS, Literal["每日交易資料", "月平均資料"]]
+    
     
 
     def __init__(self, stock_no: str=None):
@@ -21,12 +22,17 @@ class Stock:
             raise ValueError("無效的原始資料")
 
         self.__no = stock_no
-        self.__data: dict[Stock.KEYS, str| list[dict[DAILY_DATA_KEYS, str]]] = {}
+        self.__data: dict[Stock.KEYS, str | list[dict[str, str]]] = {}
         
     def __str__(self) -> str:
         return f"{self.__no}: {self.get('股票簡稱')[0] or '無名稱'}"
     
-    def set_data(self, daily_data: Optional[DAILY_DATA], real_time_data: Optional[REAL_TIME]) -> None:
+    def set_data(
+        self,
+        daily_data: Optional[DAILY_DATA] = None,
+        real_time_data: Optional[REAL_TIME] = None,
+        month_avg_data: Optional[MONTH_AVG] = None
+        ) -> None:
         """
         設定股票資料。
 
@@ -44,6 +50,9 @@ class Stock:
             for key, symbol in real_time_fields.items():
                 if symbol in real_time_data:
                     self.__data[key] = real_time_data[symbol]
+                    
+        if month_avg_data:
+            self.__data["月平均資料"] = [{"date": date, "avg": avg} for date, avg in month_avg_data.items()]
         
     def get_data(self) -> dict[KEYS, str| list[dict[DAILY_DATA_KEYS, str]]]:
         return self.__data
