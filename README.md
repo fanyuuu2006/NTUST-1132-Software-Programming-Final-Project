@@ -19,7 +19,7 @@
 ### 🔧 技術與模組
 
 - **語言**：Python 3.12
-- **架構**：Flask + LINE Messaging API + Vercel
+- **架構**：Flask + Line Messaging API + Vercel
 - **資料來源**：[台灣證券交易所（TWSE）](https://www.twse.com.tw/)公開 API
 - **功能模組**：
   - `crawler/`：爬蟲模組，負責抓取即時與歷史股票資料
@@ -31,7 +31,7 @@
 
 ## 📊 成果示例
 
-使用 `/kline 2330 20250101 202504` 指令，系統將產生以下風格的K線圖（紅色表示上漲、綠色表示下跌、黑色則不變）：
+使用 `/kline 2330 20250101 20250418` 指令，系統將產生以下風格的K線圖（紅色表示上漲、綠色表示下跌、黑色則不變）：
 
 ![K Line Example](https://tinyurl.com/28ycbplh)
 
