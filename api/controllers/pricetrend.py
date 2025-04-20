@@ -25,7 +25,7 @@ def controller(text: str) -> list[SendMessage]:
     
     url = f"https://dobujio.vercel.app/plot?"\
         f"type=trend" \
-        f"&title={urllib.parse.quote(stock_no + '-' + stock.get('股票簡稱')[0] + '-收盤價趨勢圖')}" \
+        f"&title={urllib.parse.quote(f"{stock_no}-{stock.get('股票簡稱')[0]}-收盤價趨勢圖")}" \
         f"&x_label={urllib.parse.quote('日期')}" \
         f"&y_label={urllib.parse.quote('收盤價')}" \
         f"&token={utils.data.compress_data(stock_data)}"

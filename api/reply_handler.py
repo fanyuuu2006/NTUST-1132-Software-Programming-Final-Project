@@ -10,14 +10,14 @@ from .controllers import name, test, price, daily, kline, volumebar
 FeatureHandler = Callable[[str], list[SendMessage]]
 
 
-features: dict[str, dict[Literal["discription", "format", "controller"], str | FeatureHandler]] = {  
+features: dict[str, dict[Literal["description", "format", "controller"], str | FeatureHandler]] = {  
     "/help": {
-        "discription": "顯示所有指令",
+        "description": "顯示所有指令",
         "format": "/help",
         "controller": lambda _: [
             TextSendMessage(
             text="📖 指令列表\n\n" + "\n\n".join([
-                f"🟢{data['discription']}\n📌{data['format']}" for cmd, data in features.items() if cmd != "/help"
+                f"🟢{data['description']}\n📌{data['format']}" for cmd, data in features.items() if cmd != "/help"
             ])
         ),
             TextSendMessage(
@@ -34,38 +34,38 @@ features: dict[str, dict[Literal["discription", "format", "controller"], str | F
         ]
     },
     "/test": {
-        "discription": "測試用指令",
+        "description": "測試用指令",
         "format": "/test",
         "controller": test.controller
     },
     "/name": {
-        "discription": "查詢股票名稱",
+        "description": "查詢股票名稱",
         "format": "/name <股票代號>",
         "controller": name.controller
     },
     "/price": {
-        "discription": "查詢即時股價",
+        "description": "查詢即時股價",
         "format": "/price <股票代號>",
         "controller": price.controller
     },
     # 加入 features 中：
     "/daily": {
-        "discription": "查詢期間內每日交易資訊",
+        "description": "查詢期間內每日交易資訊",
         "format": "/daily <股票代號> <起始日期?> <結束日期?>",
         "controller": daily.controller
     },
     "/pricetrend": {
-        "discription": "獲取期間內指定股票之收盤價趨勢圖",
+        "description": "獲取期間內指定股票之收盤價趨勢圖",
         "format": "/pricetrend <股票代號> <起始日期?> <結束日期?> <間隔單位?>",
         "controller": pricetrend.controller
     },
     "/kline": {
-        "discription": "獲取期間內指定股票之K線圖",
+        "description": "獲取期間內指定股票之K線圖",
         "format": "/kline <股票代號> <起始日期?> <結束日期?>",
         "controller": kline.controller
     },
     "/volumebar": {
-        "discription": "獲取期間內指定股票之成交量長條圖",
+        "description": "獲取期間內指定股票之成交量長條圖",
         "format": "/volumebar <股票代號> <起始日期?> <結束日期?> <間隔單位?>",
         "controller": volumebar.controller
     },
@@ -84,7 +84,7 @@ def reply_handler(text: str) -> list[SendMessage]:
             with open("json/dialoglib.json", "r", encoding="utf-8") as f:
                 dialoglib: dict = json.load(f)
                 for key, value in dialoglib.items():
-                    if text in key:
+                    if  key in text:
                         return [TextSendMessage(text=value)]
                 else:
                     return [TextSendMessage(text="玩股票都不揪喔❓\n輸入 /help 來查看可用的指令！😎😎")]
@@ -104,7 +104,7 @@ def reply_handler(text: str) -> list[SendMessage]:
                 return [TextSendMessage(
                     text=(
                         f"⚠️ 參數好像不太夠喔！\n\n"
-                        f"📖 功能說明：{feature['discription']}\n"
+                        f"📖 功能說明：{feature['description']}\n"
                         f"🧾 正確格式：{feature['format']}\n\n"
                         f"👉 快試試看輸入正確格式吧～"
                     )
@@ -114,7 +114,7 @@ def reply_handler(text: str) -> list[SendMessage]:
                     TextSendMessage(
                     text=(
                         f"😵‍💫 糟糕！剛剛好像發生了錯誤...\n\n"
-                        f"🔍 功能：{feature['discription']}\n"
+                        f"🔍 功能：{feature['description']}\n"
                         f"📛 錯誤內容：{str(e)}"
                     )),
                     TextSendMessage(
