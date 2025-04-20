@@ -96,11 +96,11 @@ class TaiwanStockExchangeCrawler:
         
         report_code: str = cls.REPORTS[report_name]
         result: dict = {}
+        start_time = time.time()
         
         match report_code:
             case "STOCK_DAY":
                 date_range = utils.date.check_date_range(date_range)
-                start_time = time.time()
                 
                 for date in utils.date.month_range(*date_range):
                     # 檢查是否超過9秒
@@ -134,7 +134,6 @@ class TaiwanStockExchangeCrawler:
                         
             case "STOCK_DAY_AVG":
                 date_range = utils.date.check_date_range(date_range)
-                start_time = time.time()
                 
                 for date in utils.date.month_range(*date_range):
                     # 檢查是否超過9秒
