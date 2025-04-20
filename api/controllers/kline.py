@@ -12,7 +12,7 @@ def controller(text: str) -> list[SendMessage]:
     start_date = part[2] if len(part) > 2 else utils.date.last_month()
     end_date = part[3] if len(part) > 3 else utils.date.today()
     
-    stock = TaiwanStockExchangeCrawler.no(stock_no, date_range=(start_date, end_date))
+    stock = TaiwanStockExchangeCrawler.no(stock_no, date_range=(start_date, end_date), only_fetch=["real_time","daily"])
     stock_data = stock.kline(
         date_range=(start_date, end_date),
         )

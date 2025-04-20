@@ -13,7 +13,7 @@ def controller(text: str) -> list[SendMessage]:
     end_date = part[3] if len(part) > 3 else utils.date.today()
     interval = part[4] if len(part) > 4 else "day"
     
-    stock = TaiwanStockExchangeCrawler.no(stock_no, date_range=(start_date, end_date))
+    stock = TaiwanStockExchangeCrawler.no(stock_no, date_range=(start_date, end_date), only_fetch=["daily", "real_time"] )
     stock_data = stock.daily_field_transform(
         field="成交筆數",
         interval=interval,
