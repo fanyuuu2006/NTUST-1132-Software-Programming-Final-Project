@@ -117,7 +117,7 @@ class TaiwanStockExchangeCrawler:
                     # 將民國日期轉換西元
                     try:
                         date_index = data["fields"].index("日期")
-                    except KeyError:
+                    except (KeyError, ValueError):
                         date_index = None  # 若沒有日期欄位就略過轉換
 
                     if date_index is not None:
@@ -263,8 +263,8 @@ class TaiwanStockExchangeCrawler:
         stock = Stock(stock_no)
         
         stock.set_data(
-            daily_data= cls.report("個股每日歷史交易資料", date_range, stock_no) if not only_fetch or "daily" in only_fetch else None,
             real_time_data=cls.real_time(stock_no) if not only_fetch or "real_time" in only_fetch else None,
+            daily_data= cls.report("個股每日歷史交易資料", date_range, stock_no) if not only_fetch or "daily" in only_fetch else None,
             month_avg_data = cls.report("個股每日股價與月平均", date_range, stock_no) if not only_fetch or "month_avg" in only_fetch else None
         )
         return stock

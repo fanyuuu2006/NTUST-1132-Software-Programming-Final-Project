@@ -4,7 +4,7 @@ from .models import DAILY_DATA, DAILY_DATA_KEYS, MONTH_AVG, REAL_TIME, REAL_TIME
 
 class Stock:
     """股票"""
-    KEYS = Union[REAL_TIME_KEYS, Literal["每日交易資料", "月平均資料"]]
+    KEYS = Literal[REAL_TIME_KEYS,"每日交易資料", "月平均資料" ]
     
     
 
@@ -37,35 +37,36 @@ class Stock:
         設定股票資料。
 
         參數:
-            daily_data (Optional[DAILY_DATA]): 每日交易資料，格式為 [日期, 開盤價, 最高價, 最低價, 收盤價, 成交股數, 成交金額]。
             real_time_data (Optional[REAL_TIME]): 即時資料，格式為 {欄位名稱: 欄位值}。
+            daily_data (Optional[DAILY_DATA]): 每日交易資料，格式為 [日期, 開盤價, 最高價, 最低價, 收盤價, 成交股數, 成交金額]。
+            month_avg_data (Optional[MONTH_AVG]): 月平均資料，格式為 [月份, 平均價]。
         
         """
-        if daily_data:
-            self.__data["每日交易資料"] = [
-                dict(zip(daily_data["fields"], row)) for row in daily_data["data"]
-            ]
-
         if real_time_data:
             for key, symbol in real_time_fields.items():
                 if symbol in real_time_data:
                     self.__data[key] = real_time_data[symbol]
+        
+        if daily_data:
+            self.__data["每日交易資料"] = [
+                dict(zip(daily_data["fields"], row)) for row in daily_data["data"]
+            ]
                     
         if month_avg_data:
-            self.__data["月平均資料"] = [{"date": date, "avg": avg} for date, avg in month_avg_data.items()]
+            self.__data["月平均資料"] = [{"月份": date, "平均收盤價": avg} for date, avg in month_avg_data.items()]
         
-    def get_data(self) -> dict[KEYS, str| list[dict[DAILY_DATA_KEYS, str]]]:
+    def get_data(self) -> dict:
         return self.__data
 
     def get_no(self) -> str:
         return self.__no
     
     def get(self, key:KEYS, date_range: Optional[tuple[str, str]] = None) -> list[str|list[dict[DAILY_DATA_KEYS, str]]]:
-        if key not in self.__data:
-            raise KeyError(f"無此欄位：{key}")
         if not self.__data:
             return []
-        
+        if key not in self.__data:
+            raise KeyError(f"無此欄位：{key}")
+    
         if key == "每日交易資料":
             if date_range:
                 start, end = date_range
@@ -93,13 +94,19 @@ class Stock:
         Optional[list[list[str,float]]] : 日期與對應的值的列表。
         """
         
+        if field == "收盤價" and interval == "month" and "月平均資料" in self.__data:
+                return sorted(
+                    [[data["月份"], float(data["平均收盤價"])] for data in self.__data["月平均資料"]],
+                    key=lambda x: x[0]
+                    )   
+        
         raw_data: list[dict[DAILY_DATA_KEYS, str]] = self.get("每日交易資料", date_range=date_range)[0]
 
         # 資料整理與轉換
         sorted_data: list[list[str, float]] = []
-        for entry in raw_data:
-            date = entry.get("日期")
-            val_str = entry.get(field, "")
+        for data in raw_data:
+            date = data.get("日期")
+            val_str = data.get(field, "")
             try:
                 val = float(val_str.replace(",", ""))
                 sorted_data.append([date, val])
@@ -108,19 +115,20 @@ class Stock:
 
         if not sorted_data:
             return None
-
-        # 資料排序
-        sorted_data.sort(key=lambda x: x[0])
-
-        # 聚合資料
+        
         if interval == "month":
             monthly_data: dict[str, list[float]] = {}
             for date, value in sorted_data:
                 yyyymm = date[:6]
                 monthly_data.setdefault(yyyymm, []).append(value)
-            return [[yyyymm, sum(values) / len(values)] for yyyymm, values in monthly_data.items()]
-        else:
-            return sorted_data
+            sorted_data = [[yyyymm, sum(values) / len(values)] for yyyymm, values in monthly_data.items()]
+
+        # 資料排序
+        sorted_data.sort(key=lambda x: x[0])
+
+        # 聚合資料
+
+        return sorted_data
         
     def kline(
         self,
@@ -138,14 +146,14 @@ class Stock:
         raw_data: list[dict[DAILY_DATA_KEYS, str]] = self.get("每日交易資料", date_range=date_range)[0]
         result: list[dict[str, float]] = []
 
-        for entry in raw_data:
+        for data in raw_data:
             try:
                 result.append({
-                    "date": entry["日期"],
-                    "open": float(entry["開盤價"].replace(",", "")),
-                    "high": float(entry["最高價"].replace(",", "")),
-                    "low": float(entry["最低價"].replace(",", "")),
-                    "close": float(entry["收盤價"].replace(",", "")),
+                    "date": data["日期"],
+                    "open": float(data["開盤價"].replace(",", "")),
+                    "high": float(data["最高價"].replace(",", "")),
+                    "low": float(data["最低價"].replace(",", "")),
+                    "close": float(data["收盤價"].replace(",", "")),
                 })
             except (ValueError, KeyError, TypeError):
                 continue  # 忽略資料格式錯誤的筆數
