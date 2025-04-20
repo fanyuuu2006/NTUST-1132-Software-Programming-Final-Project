@@ -1,5 +1,11 @@
 import json
-from linebot.models import SendMessage, TextSendMessage
+from linebot.models import (
+    SendMessage,
+    TextSendMessage,
+    QuickReply,
+    QuickReplyButton,
+    MessageAction
+)
 from typing import Callable, Literal
 
 from api.controllers import pricetrend
@@ -43,9 +49,9 @@ features: dict[str, dict[Literal["description", "format", "controller"], str | F
         ]
     },
     "/echo": {
-    "discription": "回傳你輸入的訊息內容（測試用）",
-    "format": "/echo <訊息>",
-    "controller": lambda text: [
+        "description": "回傳你輸入的訊息內容（測試用）",
+        "format": "/echo <訊息>",
+        "controller": lambda text: [
         TextSendMessage(
             text="你說的是：" + text.partition(" ")[2]
             )
@@ -91,13 +97,19 @@ def reply_handler(text: str) -> list[SendMessage]:
     try:
         cmd = text.split(' ')[0].lower()
         if cmd == "/":
-            return [TextSendMessage(text="/ 與 指令之間可沒有空格喔🤌")]
+            return [TextSendMessage(text="⚠️ `/` 與 指令之間可沒有空格喔🤌")]
         if cmd not in features:
             if cmd.startswith("/"):
                 candidates = [c for c in features if c.startswith(cmd)] 
             if len(candidates) > 0:
                 return [TextSendMessage(
-                    text="🧠 你是不是想打這些指令❓\n" + "\n\n".join(candidates)
+                    text="🧠 你是不是想打這些指令❓",
+                    quick_reply=QuickReply(
+                        items=[
+                            QuickReplyButton(action=MessageAction(label=c, text=c))
+                            for c in candidates[:5]
+                        ]
+                    )
                 )]
             
             # 若無匹配功能，則從 dialoglib.json 查找回覆
@@ -106,8 +118,8 @@ def reply_handler(text: str) -> list[SendMessage]:
                 for key, value in dialoglib.items():
                     if  key in text:
                         return [TextSendMessage(text=value)]
-                else:
-                    return [TextSendMessage(text="玩股票都不揪喔❓\n輸入 /help 來查看可用的指令！😎😎")]
+
+            return [TextSendMessage(text="玩股票都不揪喔❓\n輸入 /help 來查看可用的指令！😎😎")]
 
         else:
             feature = features[cmd]
