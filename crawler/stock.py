@@ -1,6 +1,6 @@
 from typing import Literal, Optional, Union
 
-from .models import DAILY_DATA_JSON, DAILY_DATA_KEYS,  REAL_TIME_JSON, REAL_TIME_KEYS, real_time_fields
+from .models import DAILY_DATA, DAILY_DATA_JSON, DAILY_DATA_KEYS, REAL_TIME,  REAL_TIME_JSON, REAL_TIME_KEYS, real_time_fields
 
 class Stock:
     """股票"""
@@ -26,32 +26,25 @@ class Stock:
     def __str__(self) -> str:
         return f"{self.__no}: {self.get('股票簡稱')[0] or '無名稱'}"
     
-    def set_data(self, daily_data: DAILY_DATA_JSON, real_time_data:REAL_TIME_JSON) -> None:
+    def set_data(self, daily_data: Optional[DAILY_DATA], real_time_data: Optional[REAL_TIME]) -> None:
         """
         設定股票資料。
 
         參數:
-            daily_data (DAILY_DATA_JSON): 每日交易資料，格式為 [日期, 開盤價, 最高價, 最低價, 收盤價, 成交股數, 成交金額]。
-            real_time_data (REAL_TIME_JSON): 即時資料，格式為 {欄位名稱: 欄位值}。
+            daily_data (Optional[DAILY_DATA]): 每日交易資料，格式為 [日期, 開盤價, 最高價, 最低價, 收盤價, 成交股數, 成交金額]。
+            real_time_data (Optional[REAL_TIME]): 即時資料，格式為 {欄位名稱: 欄位值}。
         
-        引發:
-            ValueError: 若資料格式錯誤或缺少必要欄位。
         """
-        if not daily_data or not real_time_data:
-            raise ValueError("無效的原始資料")
-    
-        for key, symbol in real_time_fields.items():
-            if symbol in real_time_data["msgArray"][0]:
-                self.__data[key] = real_time_data["msgArray"][0][symbol]
-                
-        # 對每日資料進行結構化
-        fields = daily_data["fields"]
-        records = daily_data["data"]
+        if daily_data:
+            self.__data["每日交易資料"] = [
+                dict(zip(daily_data["fields"], row)) for row in daily_data["data"]
+            ]
 
-        for row in records:
-            day_data = {fields[i]: row[i] for i in range(len(fields))}
-            self.__data.setdefault("每日交易資料", []).append(day_data)
-            
+        if real_time_data:
+            for key, symbol in real_time_fields.items():
+                if symbol in real_time_data:
+                    self.__data[key] = real_time_data[symbol]
+        
     def get_data(self) -> dict[KEYS, str| list[dict[DAILY_DATA_KEYS, str]]]:
         return self.__data
 

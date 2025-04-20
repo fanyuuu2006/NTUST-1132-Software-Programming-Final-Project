@@ -20,6 +20,11 @@ class DAILY_DATA_JSON(TypedDict):
     data: list[list[str]]
     notes: list[str]
     total: int
+    
+class DAILY_DATA(TypedDict):
+    fields: list[DAILY_DATA_KEYS]
+    data: list[list[str]]
+
 
 
 REAL_TIME_FIELDS = Literal[
@@ -61,8 +66,10 @@ class REAL_TIME_JSON(TypedDict):
     queryTime: QUERY_TIME
     exKey: str
     cachedAlive: int
-
-
+    
+REAL_TIME = dict[REAL_TIME_FIELDS, str]
+    
+    
 
 real_time_fields: dict[REAL_TIME_KEYS, REAL_TIME_FIELDS]={
     "股票代碼": "@",
