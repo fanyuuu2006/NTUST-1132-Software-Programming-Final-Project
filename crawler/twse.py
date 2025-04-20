@@ -66,7 +66,7 @@ class TaiwanStockExchangeCrawler:
                 raise RuntimeError(f"API 回傳錯誤：[{key}: {data[key]}] {params}")
 
         return data
-
+    
     @classmethod
     def report(
         cls,
@@ -94,53 +94,123 @@ class TaiwanStockExchangeCrawler:
         if report_name not in cls.REPORTS:
             raise ValueError(f"找不到報表名稱：{report_name}")
         
-        date_range = utils.date.check_date_range(date_range)
-    
         report_code: str = cls.REPORTS[report_name]
-
         result: dict = {}
-        # 記錄開始時間
-        start_time = time.time()
         
-        for date in utils.date.month_range(*date_range):
-            # 檢查是否超過9秒
-            if time.time() - start_time > 9:
-                raise RuntimeError("請求時間過長，請減少查詢範圍")
-            
-            params: dict[str, str] = {
-                "response": response_format,
-                "date": date,
-            }
-            
-            match report_code:
-                case "STOCK_DAY" | "STOCK_DAY_AVG":
-                    params["stockNo"] = stock_no
-                case "MI_MARGN":
-                    params["selectType"] = "margin"  # 範例，實際可查 twse 參數
-                case "T86":
-                    params["selectType"] = "ALLBUT0999"  # 排除代號 0999
+        match report_code:
+            case "STOCK_DAY":
+                date_range = utils.date.check_date_range(date_range)
+                start_time = time.time()
+                
+                for date in utils.date.month_range(*date_range):
+                    # 檢查是否超過9秒
+                    if time.time() - start_time > 9:
+                        raise RuntimeError("請求時間過長，請減少查詢範圍")
                     
-            data = cls.fetch(f"{cls.URLS["交易報表"]}/{report_code}", params)
-            # 將民國日期轉換西元
-            try:
-                date_index = data["fields"].index("日期")
-            except ValueError:
-                date_index = None  # 若沒有日期欄位就略過轉換
-            except KeyError:
-                raise RuntimeError("無法取得資料", data)
-
-            if date_index is not None:
-                for row in data.get("data", []):
+                    params: dict[str, str] = {
+                        "response": response_format,
+                        "date": date,
+                        "stockNo": stock_no
+                    }
+                            
+                    data = cls.fetch(f"{cls.URLS["交易報表"]}/{report_code}", params)
+                    # 將民國日期轉換西元
                     try:
-                        row[date_index] = utils.date.roc_to_ad(row[date_index], output_format="%Y%m%d")
-                    except Exception:
-                        pass  # 無法轉換的就略過
-            
-            if not result:
-                result = data
-            else:
-                result["data"].extend(data.get("data", []))  # 合併每月資料
+                        date_index = data["fields"].index("日期")
+                    except KeyError:
+                        date_index = None  # 若沒有日期欄位就略過轉換
+
+                    if date_index is not None:
+                        for row in data.get("data", []):
+                            try:
+                                row[date_index] = utils.date.roc_to_ad(row[date_index], output_format="%Y%m%d")
+                            except Exception:
+                                pass  # 無法轉換的就略過
+                    
+                    if not result:
+                        result = { "fields":data["fields"] , "data":data["data"]}
+                    else:
+                        result["data"].extend(data.get("data", []))  # 合併每月資料
+                        
+            case "STOCK_DAY_AVG":...
+            case "MI_INDEX":...
+                
+            case _:
+                raise RuntimeError(f"不應該運行至這段：{report_code}")
         return result
+
+    # @classmethod
+    # def report(
+    #     cls,
+    #     report_name: REPORTS_KEYS,
+    #     date_range: Optional[tuple[Optional[str], Optional[str]]] = None,
+    #     stock_no: Optional[str] = None,
+    #     response_format: str = "json"
+    # ) -> dict:
+    #     """
+    #     向台灣證券交易所（TWSE）抓取指定報表的原始資料。
+
+    #     參數：
+    #         report_name (str): 報表名稱，需為 `REPORTS` 中的鍵名。
+    #         date_range (Optional[tuple[str, str]]): 查詢的日期區間 (起始日期, 結束日期)，格式為 'YYYYMMDD'。若為 None，則回傳本月的資料。
+    #         stock_no (str, optional): 股票代號（僅部分報表需要）。
+    #         response_format (str): 回傳資料格式，預設為 "json"。
+
+    #     回傳：
+    #         dict: 回傳的 JSON 結果。
+
+    #     拋出：
+    #         - ValueError: 若報表名稱無效。
+    #         - RuntimeError: 若 API 回傳錯誤或格式非 JSON。
+    #     """
+    #     if report_name not in cls.REPORTS:
+    #         raise ValueError(f"找不到報表名稱：{report_name}")
+        
+    #     date_range = utils.date.check_date_range(date_range)
+    
+    #     report_code: str = cls.REPORTS[report_name]
+
+    #     result: dict = {}
+    #     # 記錄開始時間
+    #     start_time = time.time()
+        
+    #     for date in utils.date.month_range(*date_range):
+    #         # 檢查是否超過9秒
+    #         if time.time() - start_time > 9:
+    #             raise RuntimeError("請求時間過長，請減少查詢範圍")
+            
+    #         params: dict[str, str] = {
+    #             "response": response_format,
+    #             "date": date,
+    #         }
+            
+    #         match report_code:
+    #             case "STOCK_DAY" | "STOCK_DAY_AVG":
+    #                 params["stockNo"] = stock_no
+    #             case "MI_MARGN":
+    #                 params["selectType"] = "margin"  # 範例，實際可查 twse 參數
+    #             case "T86":
+    #                 params["selectType"] = "ALLBUT0999"  # 排除代號 0999
+                    
+    #         data = cls.fetch(f"{cls.URLS["交易報表"]}/{report_code}", params)
+    #         # 將民國日期轉換西元
+    #         try:
+    #             date_index = data["fields"].index("日期")
+    #         except KeyError:
+    #             date_index = None  # 若沒有日期欄位就略過轉換
+
+    #         if date_index is not None:
+    #             for row in data.get("data", []):
+    #                 try:
+    #                     row[date_index] = utils.date.roc_to_ad(row[date_index], output_format="%Y%m%d")
+    #                 except Exception:
+    #                     pass  # 無法轉換的就略過
+            
+    #         if not result:
+    #             result = {"fields":data["fields"],"data":data["data"]}
+    #         else:
+    #             result["data"].extend(data.get("data", []))  # 合併每月資料
+    #     return result
 
     @classmethod
     def real_time(cls, stock_no: str) -> dict:

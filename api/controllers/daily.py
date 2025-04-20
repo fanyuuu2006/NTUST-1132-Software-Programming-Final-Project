@@ -19,11 +19,11 @@ def controller(text: str) -> list[SendMessage]:
     daily_data: list[dict[DAILY_DATA_KEYS, str]] = stock.get("每日交易資料", date_range=(start_date, end_date))[0]
 
     if not daily_data:
-        return [TextSendMessage(text="查無資料，請確認股票代號與日期是否正確 ✅")]
+        return [TextSendMessage(text="查無資料，請確認股票代號與日期是否正確⚠️")]
 
     # 整理文字內容
     result: list[SendMessage] = []
-    header = f"📊 股票代碼: {stock_no} ({stock.get("股票簡稱")[0]})\n（{start_date} ~ {end_date}\n每日交易資訊如下：\n"
+    header = f"📊 股票代碼: {stock_no}-{stock.get("股票簡稱")[0]}\n（{start_date} ~ {end_date})\n每日交易資訊如下：\n"
     result.append(TextSendMessage(text=header))
     group_text = ""
     for i, day_data in enumerate(daily_data):
