@@ -15,8 +15,8 @@ def controller(text: str) -> list[SendMessage]:
     except ValueError as e:
         if "-" in str(e):
             return [
-                TextSendMessage(text=f"📌 股票代號：{stock_no}\n⚠️ 今日暫無報價或尚未開盤"),
-            ]
+                TextSendMessage(text="⚠️ 無法取得即時股價，可能是輸入錯誤、未開盤或今日無交易。")
+                ]
         else:
             raise ValueError(e)
     # 回覆訊息列表
