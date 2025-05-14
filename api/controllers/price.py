@@ -10,15 +10,22 @@ def controller(text: str) -> list[SendMessage]:
     stock_no = part[1]
 
     # 查詢即時價格
-    stock_price = TaiwanStockExchangeCrawler.no(stock_no, only_fetch=["real_time"]).get("目前成交價")[0]
-
+    try:
+        stock_price = round(float(TaiwanStockExchangeCrawler.no(stock_no, only_fetch=["real_time"]).get("目前成交價")[0]), 2)
+    except ValueError as e:
+        if "-" in str(e):
+            return [
+                TextSendMessage(text=f"📌 股票代號：{stock_no}\n⚠️ 今日暫無報價或尚未開盤"),
+            ]
+        else:
+            raise ValueError(e)
     # 回覆訊息列表
     return [
             TextSendMessage(
                     text=(
                         f"📈 即時股價查詢\n"
                         f"📌 股票代號：{stock_no}\n"
-                        f"💰 目前成交價：{round(float(stock_price), 2):.2f}"
+                        f"💰 目前成交價：{stock_price:.2f}"
                     )
                 )
             ]

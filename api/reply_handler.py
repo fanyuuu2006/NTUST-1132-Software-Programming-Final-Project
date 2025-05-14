@@ -136,6 +136,7 @@ def reply_handler(text: str) -> list[SendMessage]:
                         f"👉 快試試看輸入正確格式吧～"
                     )
                 )]
+            
             except Exception as e:
                 return [
                     TextSendMessage(
