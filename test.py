@@ -1,8 +1,11 @@
 from crawler import TaiwanStockExchangeCrawler
 import utils
 import json
+import requests 
 
 
-crawler = TaiwanStockExchangeCrawler()
-with open("./json/example/stock_data.json", mode="w", encoding="utf-8") as f:
-    json.dump(crawler.no(stock_no="2330", date_range=("20250101", "20250401")).get_data(),f, ensure_ascii=False, indent=4)
+data = TaiwanStockExchangeCrawler.report("個股每日歷史交易資料",stock_no=2330, date_range=("20241201", None))
+
+s = utils.data.compress_data(data)
+
+print(s)

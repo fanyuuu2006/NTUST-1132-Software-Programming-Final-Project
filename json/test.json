@@ -1,6 +1,23 @@
 {
-    "202501": "1102.00",
-    "202502": "1087.37",
-    "202503": "978.24",
-    "202504": "865.08"
+  "destination": "U59592732bdfb2b850f67ecfecc00d810",
+  "events": [
+    {
+      "type": "message",
+      "message": {
+        "type": "text",
+        "id": "558970160405545032",
+        "quoteToken": "RH5BTYuLeZ2Fh2aMMonLl0YAGH24_lnamhloI-JcBX_0ntX98xpCn22b4bJWKWu8TUK8ZTSVxesFnGTwogwL4vCKvJDMXaNoZWxSzLuL66MPpR1ZCTpymVHzqHBOWrGEBtZ4RCQWYRDJw9HZsZ_00g",
+        "text": "/kline 2330 20241201"
+      },
+      "webhookEventId": "01JT2YNP1XC850MPMVXCNA23FN",
+      "deliveryContext": { "isRedelivery": false },
+      "timestamp": 1746003482642,
+      "source": {
+        "type": "user",
+        "userId": "U457f70fbd22ba261bf7bd6f8f06a4966"
+      },
+      "replyToken": "1f50b982ad0c41daa8e0b69f00a94cbd",
+      "mode": "active"
+    }
+  ]
 }

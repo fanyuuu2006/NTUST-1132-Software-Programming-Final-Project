@@ -39,21 +39,12 @@ features: dict[str, dict[Literal["description", "format", "controller"], str | F
         )
         ]
     },
-    "/test": {
-        "description": "測試用指令",
-        "format": "/test",
-        "controller": lambda _: [
-            TextSendMessage(
-                text="🧪 測試成功！\n測試都不揪喔❓😎"
-            )
-        ]
-    },
     "/echo": {
         "description": "回傳你輸入的訊息內容（測試用）",
         "format": "/echo <訊息>",
         "controller": lambda text: [
         TextSendMessage(
-            text="你說的是：" + text.partition(" ")[2]
+            text= text.partition(" ")[2] + "都不揪❓"
             )
         ]
     },
@@ -157,7 +148,7 @@ def reply_handler(text: str) -> list[SendMessage]:
                         text=(
                             f"你可以稍後再試，或回報問題給開發者 🙇\n"
                             f"開發者的聯絡方式：\n"
-                            f"https://www.instagram.com/fan._.yuuu/\n"
+                            f"https://fanyu.vercel.app\n"
                             f"（請附上錯誤內容）"
                         ))
                 ]

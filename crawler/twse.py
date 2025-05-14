@@ -10,13 +10,21 @@ class TaiwanStockExchangeCrawler:
     """
     台灣證券交易所資料爬蟲
     """
+    headers = {
+            'User-Agent': 'Mozilla/5.0',
+            "Referer": "https://www.twse.com.tw/",
+            "Accept": "application/json",
+            }
+    
     URL_KEYS = Literal[
         "交易報表",
-        "即時資訊"
+        "即時資訊",
+        "股票代號"
     ]
     URLS: dict[URL_KEYS,str] = {
         "交易報表":"https://www.twse.com.tw/exchangeReport",
         "即時資訊":"https://mis.twse.com.tw/stock/api/getStockInfo.jsp", 
+        "股票代號":"https://isin.twse.com.tw/isin/C_public.jsp"
         }
         
     REPORTS_KEYS=Literal[
@@ -27,6 +35,7 @@ class TaiwanStockExchangeCrawler:
         "融資融券與借券成交明細",
         "法人持股統計",
     ]
+    
     REPORTS: dict[REPORTS_KEYS, str] = {
         "每日收盤行情": "MI_INDEX",
         "三大法人買賣超": "T86",
@@ -40,14 +49,10 @@ class TaiwanStockExchangeCrawler:
 
     @classmethod
     def fetch(cls, url: str, params: Optional[dict]=None) -> dict:
-        headers = {
-            'User-Agent': 'Mozilla/5.0',
-            "Referer": "https://www.twse.com.tw/",
-            "Accept": "application/json",
-            }
+        
         
         try:
-            response = requests.get(url, params=params, headers=headers, timeout=10) # vercel 部屬的api TimeOut 10s 
+            response = requests.get(url, params=params, headers=cls.headers, timeout=10) # vercel 部屬的api TimeOut 10s 
             data = response.json()
         except ValueError:
             raise RuntimeError(f"無法解析 JSON：{response.text}")
@@ -85,7 +90,7 @@ class TaiwanStockExchangeCrawler:
             response_format (str): 回傳資料格式，預設為 "json"。
 
         回傳：
-            dict: 回傳的 JSON 結果。
+            DAILY_DATA | MONTH_AVG: 回傳的 JSON 結果。
 
         拋出：
             - ValueError: 若報表名稱無效。
