@@ -1,13 +1,16 @@
 # 網路爬蟲與請求處理
-requests>=2.32.3
+requests
 
 # 資料視覺化
-matplotlib>=3.7
+matplotlib
 
 # LINE 聊天機器人 SDK
-line-bot-sdk>=3.3.0
+line-bot-sdk
 
 # 載入 .env 檔案中的環境變數
-python-dotenv>=0.20.0
+python-dotenv
 
-flask>=2.2
+flask
+
+# google gemini ganai
+google-generativeai
