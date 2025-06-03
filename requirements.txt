@@ -12,5 +12,4 @@ python-dotenv
 
 flask
 
-# google gemini ganai
-google-generativeai
+# google-generativeai
