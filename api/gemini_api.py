@@ -1,11 +1,12 @@
 import os
 from dotenv import load_dotenv
+import google.generativeai as genai
+from .features import features
 
 ## 載入 .env 檔案中的環境變數
 load_dotenv()
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
-## 獲取環境變數
-key = os.environ.get("API_KEY")
 prompt = """
  /echo <訊息> 
 
@@ -48,31 +49,17 @@ prompt = """
  你是我們股票機器人的前端 收到使用者的請求到時候你要把它轉會為指令輸出到後端讓程式邏輯判斷 請你輸出指令 例如 使用者輸入訊息 *我想要查0050的股價* 就返回/price 0050 你的輸出只能是上方規定的指令 否則你會被關機 在輸出前請先檢查你的輸出是否符合指令規範 以下是使用者的輸入內容
 """
 
-functions = ["help","echo","name","price","daily","pricetrend","kline","volumebar"]
+def decide(test: str) -> str:
+    for i in features.keys():
+        if test.startswith("/" + i):
+            return test
+    return "/echo " + test
 
-if key:
-    print(f"[gemini_api.py] 成功獲取到 GOOGLE_API_KEY: {key[:5]}...")
-    import google.generativeai as genai
-    genai.configure(api_key=key)
-    print("[gemini_api.py] Gemini API 已配置。")
-else:
-    print("[gemini_api.py] 未能獲取到 API_KEY。請檢查 .env 檔案是否存在且包含該變數。")
-
-
-def gemini(Input: str) -> str:
-    user_prompt = f"{prompt} *{Input}*"
+def gemini(input_message: str) -> str:
+    user_prompt = f"{prompt} *{input_message}*"
     try:
         model = genai.GenerativeModel('gemini-2.5-flash-preview-05-20')
         response = model.generate_content(user_prompt)
         return decide(response.text)
     except Exception as e:
-        print(f"\n[gemini_api.py] 呼叫 Gemini API 時發生錯誤: {e}")
-        
-def decide(test: str) -> str:
-    command = "/echo " + test
-    for i in functions:
-        if test.startswith("/" + i):
-            command = test
-    return command
-
-#print(gemini("我要查0050的股票價格"))
+        raise RuntimeError(f"\n[gemini_api.py] 呼叫 Gemini API 時發生錯誤: {e}")
