@@ -8,7 +8,7 @@ from linebot.models import (
 )
 
 from .features import features
-from .gemini_api import gemini
+# from .gemini_api import gemini
 
 def reply_handler(text: str, gemini_tried: bool = False) -> list[SendMessage]:
     """
