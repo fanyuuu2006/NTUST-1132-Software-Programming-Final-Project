@@ -3,6 +3,6 @@ services:
     name: dobujio
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn api.webhook:app"
+    startCommand: "python api/webhook.py"
     plan: free
     autoDeploy: true
