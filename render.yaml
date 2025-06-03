@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: dobujou
+    name: dobujio
     env: python
     buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn api.webhook:app"
