@@ -23,7 +23,7 @@ def controller(text: str) -> list[SendMessage]:
 
     # 整理文字內容
     result: list[SendMessage] = []
-    header = f"📊 股票代碼: {stock_no}-{stock.get("股票簡稱")[0]}\n（{start_date} ~ {end_date})\n每日交易資訊如下：\n"
+    header = f"📊 股票代碼: {stock_no}-{stock.get('股票簡稱')[0]}\n（{start_date} ~ {end_date})\n每日交易資訊如下：\n"
     result.append(TextSendMessage(text=header))
     group_text = ""
     for i, day_data in enumerate(daily_data, start=1):
