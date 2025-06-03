@@ -1,11 +1,4 @@
-from crawler import TaiwanStockExchangeCrawler
-import utils
-import json
-import requests 
-
-
-data = TaiwanStockExchangeCrawler.report("個股每日歷史交易資料",stock_no=2410, date_range=("20241201", None))
-
-s = utils.data.compress_data(data)
-
-print(s)
+from dotenv import load_dotenv
+load_dotenv(".env.local")
+from api.reply_handler import reply_handler
+print(reply_handler("我想要台積電的股價"))
