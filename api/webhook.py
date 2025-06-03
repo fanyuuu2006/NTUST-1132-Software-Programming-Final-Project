@@ -103,3 +103,6 @@ def plot():
         as_attachment=False,
         download_name=f"{title}.jpg"
     )
+    
+if __name__ == "__main__":
+    app.run()
