@@ -1,7 +1,7 @@
 import io
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from flask import Flask, abort, request, send_file
 
 import os
@@ -11,14 +11,14 @@ import utils
 from visualize import Chart
 from .reply_handler import reply_handler
 
-# 讀取 .env 環境變數 (本地端使用)
-load_dotenv(".env.local") 
+# 讀取 .env 環境變數
+load_dotenv()
 
 # 初始化 LINE Bot API 與 Webhook Handler
 LINE_BOT = LineBotApi(os.getenv("LINE_CHANNEL_ACCESS_TOKEN"))
 WEBHOOK = WebhookHandler(os.getenv("LINE_CHANNEL_SECRET"))
 
-app = Flask(__name__)  # <-- 會自動找這個 app 當 handler
+app = Flask(__name__)  # <-- Vercel 會自動找這個 app 當 handler
 
 @app.route("/", methods=["GET"])
 def index():
@@ -103,6 +103,3 @@ def plot():
         as_attachment=False,
         download_name=f"{title}.jpg"
     )
-    
-if __name__ == "__main__":
-    app.run()
