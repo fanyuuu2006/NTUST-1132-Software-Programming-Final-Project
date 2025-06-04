@@ -120,7 +120,7 @@ class TaiwanStockExchangeCrawler:
                         "stockNo": stock_no
                     }
                             
-                    data: DAILY_DATA_JSON = cls.fetch(f"{cls.URLS["交易報表"]}/{report_code}", params)
+                    data: DAILY_DATA_JSON = cls.fetch(f"{cls.URLS['交易報表']}/{report_code}", params)
                     # 將民國日期轉換西元
                     try:
                         date_index = data["fields"].index("日期")
@@ -153,12 +153,12 @@ class TaiwanStockExchangeCrawler:
                         "stockNo": stock_no
                     }
                         
-                    data: MONTH_AVG_JSON = cls.fetch(f"{cls.URLS["交易報表"]}/{report_code}", params)
+                    data: MONTH_AVG_JSON = cls.fetch(f"{cls.URLS['交易報表']}/{report_code}", params)
                     
                     result[date[:6]] = data["data"][-1][1]
                     
             case "MI_INDEX":
-                result = cls.fetch(f"{cls.URLS["交易報表"]}/{report_code}")
+                result = cls.fetch(f"{cls.URLS['交易報表']}/{report_code}")
                 
             case _:
                 raise RuntimeError(f"不應該運行至這段：{report_code}")
