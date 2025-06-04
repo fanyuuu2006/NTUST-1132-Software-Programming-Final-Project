@@ -22,10 +22,10 @@ def controller(text: str) -> list[SendMessage]:
     
     if not stock_data:
         return [TextSendMessage(text="⚠️ 該期間內查無收盤價資料\n請確認日期或改用其他區間")]
-    
+
     url = f"https://dobujio.vercel.app/plot?"\
         f"type=trend" \
-        f"&title={urllib.parse.quote(f"{stock_no}-{stock.get('股票簡稱')[0]}-收盤價趨勢圖")}" \
+        f"&title={urllib.parse.quote(stock_no + '-' + stock.get('股票簡稱')[0] + '-收盤價趨勢圖')}" \
         f"&x_label={urllib.parse.quote('日期')}" \
         f"&y_label={urllib.parse.quote('收盤價')}" \
         f"&token={utils.data.compress_data(stock_data)}"
