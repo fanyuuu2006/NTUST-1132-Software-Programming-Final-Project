@@ -8,7 +8,7 @@ load_dotenv()
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
 prompt = """
- 獲取可用的指令
+ 獲取可用的功能指令
  /help 
 
  回傳你輸入的訊息內容（測試用）
