@@ -39,7 +39,7 @@ features: dict[str, dict[Literal["description", "format", "controller"], str | F
         "format": "/echo <訊息>",
         "controller": lambda text: [
         TextSendMessage(
-            text= text.partition(" ")[2] + "都不揪❓"
+            text= text.partition(" ")[2]
             )
         ]
     },
