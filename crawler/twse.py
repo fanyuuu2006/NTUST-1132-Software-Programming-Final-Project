@@ -44,6 +44,8 @@ class TaiwanStockExchangeCrawler:
         "融資融券與借券成交明細": "MI_MARGN", 
         "法人持股統計": "MI_INDEX20",             
     }
+    
+    TIMEOUT=10
 
     def __init__(self): ...
 
@@ -52,7 +54,7 @@ class TaiwanStockExchangeCrawler:
         
         
         try:
-            response = requests.get(url, params=params, headers=cls.headers, timeout=10) # vercel 部屬的api TimeOut 10s 
+            response = requests.get(url, params=params, headers=cls.headers, timeout=cls.TIMEOUT) 
             data = response.json()
         except ValueError:
             raise RuntimeError(f"無法解析 JSON：{response.text}")
@@ -108,8 +110,8 @@ class TaiwanStockExchangeCrawler:
                 date_range = utils.date.check_date_range(date_range)
                 
                 for date in utils.date.month_range(*date_range):
-                    # 檢查是否超過9秒
-                    if time.time() - start_time > 9:
+
+                    if time.time() - start_time >= cls.TIMEOUT:
                         raise RuntimeError("請求時間過長，請減少查詢範圍")
                     
                     params: dict[str, str] = {
