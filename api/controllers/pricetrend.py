@@ -1,5 +1,4 @@
 from linebot.models import SendMessage, ImageSendMessage, TextSendMessage
-import urllib.parse
 from crawler import TaiwanStockExchangeCrawler
 import utils
 def controller(text: str) -> list[SendMessage]:
@@ -22,13 +21,14 @@ def controller(text: str) -> list[SendMessage]:
     
     if not stock_data:
         return [TextSendMessage(text="⚠️ 該期間內查無收盤價資料\n請確認日期或改用其他區間")]
-
-    url = f"https://dobujio.vercel.app/plot?"\
-        f"type=trend" \
-        f"&title={urllib.parse.quote(stock_no + '-' + stock.get('股票簡稱')[0] + '-收盤價趨勢圖')}" \
-        f"&x_label={urllib.parse.quote('日期')}" \
-        f"&y_label={urllib.parse.quote('收盤價')}" \
-        f"&token={utils.data.compress_data(stock_data)}"
+  
+    url = utils.url.generate_plot_url(
+        type="trend",
+        title=stock_no + '-' + stock.get('股票簡稱')[0] + '-收盤價趨勢圖',
+        x_label='日期',
+        y_label='收盤價',
+        token= utils.data.compress_data(stock_data)
+        )
         
     if len(url) > 2000:
         raise ValueError("❗資料量過大，超過圖表產生限制，請縮短日期範圍或區間方式再試一次 🙏")

@@ -1,5 +1,4 @@
 from linebot.models import SendMessage, ImageSendMessage, TextSendMessage
-import urllib.parse
 from crawler import TaiwanStockExchangeCrawler
 import utils
 def controller(text: str) -> list[SendMessage]:
@@ -16,12 +15,12 @@ def controller(text: str) -> list[SendMessage]:
     stock_data = stock.kline(
         date_range=(start_date, end_date),
         )
-    
-
-    url = f"https://dobujio.vercel.app/plot?"\
-        f"type=kline" \
-        f"&title={urllib.parse.quote(stock_no + '-' + stock.get('股票簡稱')[0] + '-K線圖')}" \
-        f"&token={utils.data.compress_data(stock_data)}"
+     
+    url = utils.url.generate_plot_url(
+        type="kline",
+        title=stock_no + '-' + stock.get('股票簡稱')[0] + '-K線圖',
+        token= utils.data.compress_data(stock_data)
+        )
         
     if len(url) > 2000:
         raise ValueError("❗資料量過大，超過圖表產生限制，請縮短日期範圍或區間方式再試一次 🙏")

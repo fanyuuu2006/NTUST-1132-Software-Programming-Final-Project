@@ -1,4 +1,6 @@
+from typing import Optional
 import requests
+import urllib.parse
 
 def shorten_url(url: str) -> str:
     """
@@ -14,3 +16,13 @@ def shorten_url(url: str) -> str:
     return response.text  # 短網址
 
 
+def generate_plot_url(type: str, title: str, x_label: Optional[str], y_label: Optional[str], token: str):
+    """
+    產生圖表網址
+    """
+    return f"https://dobujio.onrender.com/plot?"\
+        f"type={type}" \
+        f"&title={urllib.parse.quote(title)}" \
+        f"&x_label={urllib.parse.quote(x_label)}" \
+        f"&y_label={urllib.parse.quote(y_label)}" \
+        f"&token={urllib.parse.quote(token)}"
