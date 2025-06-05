@@ -19,7 +19,7 @@
 ### 🔧 技術與模組
 
 - **語言**：Python 3.12
-- **架構**：Flask + Line Messaging API + Vercel
+- **架構**：Flask + Line Messaging API + Render
 - **資料來源**：[台灣證券交易所（TWSE）](https://www.twse.com.tw/)公開 API
 - **功能模組**：
   - `crawler/`：爬蟲模組，負責抓取即時與歷史股票資料
