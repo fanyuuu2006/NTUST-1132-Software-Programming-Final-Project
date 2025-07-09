@@ -26,10 +26,12 @@ def index():
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    signature = request.headers.get("X-Line-Signature", "")
+    header = request.headers
+    signature = header.get("X-Line-Signature")
     body = request.get_data(as_text=True)
     
     print("Received signature:", signature)
+    print("Request headers:", header)
     print("Request body:", body)
 
     try:
