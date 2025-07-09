@@ -8,7 +8,6 @@ from linebot.models import (
 )
 
 from .features import features
-from .gemini_api import gemini
 
 def reply_handler(text: str, gemini_tried: bool = False) -> list[SendMessage]:
     """
@@ -74,11 +73,6 @@ def reply_handler(text: str, gemini_tried: bool = False) -> list[SendMessage]:
                         )
                     )]
                     
-            # 若尚未使用 Gemini 嘗試，自然語言處理轉換
-            if not gemini_tried:
-                command = gemini(text)
-                if command != text:
-                    return reply_handler(command, gemini_tried=True)
                 
             # 若無匹配功能，則從 dialoglib.json 查找回覆
             with open("json/dialoglib.json", "r", encoding="utf-8") as f:
