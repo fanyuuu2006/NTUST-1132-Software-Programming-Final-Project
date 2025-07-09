@@ -48,4 +48,4 @@ def generate_plot_url(
         params["y_label"] = y_label
 
     query_string = urllib.parse.urlencode(params, quote_via=urllib.parse.quote)
-    return f"https://dobujio.onrender.com/plot?{query_string}"
+    return f"https://dobujio.vercel.app/plot?{query_string}"
