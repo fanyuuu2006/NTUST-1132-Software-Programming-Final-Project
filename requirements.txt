@@ -12,6 +12,6 @@ python-dotenv
 
 flask
 
-google-generativeai
+# google-generativeai
 
-gunicorn
+# gunicorn
