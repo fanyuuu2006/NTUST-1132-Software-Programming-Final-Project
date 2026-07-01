@@ -9,7 +9,7 @@ from linebot.models import (
 
 from .features import features
 
-def reply_handler(text: str, gemini_tried: bool = False) -> list[SendMessage]:
+def reply_handler(text: str) -> list[SendMessage]:
     """
     根據傳入的文字，取得對應的 LINE 回覆訊息。
     """
@@ -54,8 +54,7 @@ def reply_handler(text: str, gemini_tried: bool = False) -> list[SendMessage]:
                         text=(
                             f"你可以稍後再試，或回報問題給開發者 🙇\n"
                             f"開發者的聯絡方式：\n"
-                            f"-假裝一下這邊有聯繫方式-\n"
-                            f"（請附上錯誤內容）"
+                            f"IG：@fan._.yuuu"
                         ))
                 ]
 
